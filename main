@@ -21,6 +21,13 @@ Name = "player stuff", Default = "no", Options = updatePlayerList(), Callback = 
 selectedPlayer = Value == "no" and "no" or game:GetService("Players"):FindFirstChild(Value)
 if selectedPlayer == "no" then firing = false end end }) 
 spawn(checkForWeapons)
+
+playerTab:AddButton({ Name = "reload ui", Callback = function() wait(0.2) OrionLib:MakeNotification({
+	Name = "reloading!",
+	Content = "meow",
+	Image = "rbxassetid://4483345998",
+	Time = 1.1
+}) wait(1) loadstring(game:HttpGet(('https://raw.githubusercontent.com/theforbiddentaco1/dvn/refs/heads/main/main')))() end })
 ----
 ---
 ---
