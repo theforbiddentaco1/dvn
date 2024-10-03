@@ -1,0 +1,458 @@
+wait(2.3)
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+-- PLAYER TAB (meow)
+local targetWeapons = {"Recurve", "Vitabow", "Medical Bow"}
+local selectedPlayer = nil local activeWeapons = {} local firing = false
+local playerTab = Window:MakeTab({ Name = "players", Icon = "rbxassetid://4483345998", PremiumOnly = false }) function checkForWeapons() while true do activeWeapons = {} for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+local backpack = player:FindFirstChild("Backpack") if backpack then for _, item in pairs(backpack:GetChildren()) do
+if table.find(targetWeapons, item.Name) then table.insert(activeWeapons, {weapon = item, player = player}) end end end
+if player.Character then for _, item in pairs(player.Character:GetChildren()) do
+if table.find(targetWeapons, item.Name) then table.insert(activeWeapons, {weapon = item, player = player}) end end end end
+if selectedPlayer and selectedPlayer ~= "no" and #activeWeapons > 0 and not firing then firing = true spawn(function()
+while firing do for _, data in pairs(activeWeapons) do local weapon = data.weapon local weaponOwner = data.player
+local args = { [1] = selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Humanoid"), [2] = Vector3.zero, [3] = Vector3.new(0, 0, 10000) }
+if weapon and weapon:FindFirstChild("VerifyHit") and args[1] then weapon.VerifyHit:FireServer(unpack(args)) end end wait(0.2) end
+end) elseif selectedPlayer == "no" then firing = false end wait(1) end end
+function updatePlayerList() local players = {"no"} for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+table.insert(players, player.Name) end return players end playerTab:AddDropdown({
+Name = "player stuff", Default = "no", Options = updatePlayerList(), Callback = function(Value)
+selectedPlayer = Value == "no" and "no" or game:GetService("Players"):FindFirstChild(Value)
+if selectedPlayer == "no" then firing = false end end }) 
+spawn(checkForWeapons)
+----
+---
+---
+----
+-- SPECIALIST TAB
+local specialistTab = Window:MakeTab({
+	Name = "specialist",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+specialistTab:AddBind({
+	Name = "hitbox",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+if not game:IsLoaded() then game.Loaded:Wait() end
+local enemyNames = game:GetService("ReplicatedStorage").Units.Noobs:GetChildren() local function AddHighlight(instance, color)
+local highlight = Instance.new("Highlight") highlight.FillColor = color
+highlight.OutlineColor = Color3.new(1, 1, 1) highlight.Parent = instance
+end local function PutOnExtend(instance) for _, x in ipairs(enemyNames) do
+if tostring(x) == instance.Name and instance:IsA("Model") and instance ~= nil then
+if instance.Name == "Launcher" or instance.Name == "Hermes" then return end
+if instance.Name == "Sniper" then AddHighlight(instance, Color3.fromRGB(50, 50, 200))
+elseif instance.Name == "Jetpacker" then AddHighlight(instance, Color3.fromRGB(128, 50, 128))
+elseif instance.Name == "Gunner" then AddHighlight(instance, Color3.fromRGB(200, 50, 50)) end
+for _, descendant in ipairs(instance:GetDescendants()) do if descendant:IsA("Part") then if descendant.Name == "Head" then
+local parent = descendant.Parent if parent and parent.Name ~= "APU" then descendant.Transparency = 0.8 descendant.Size = Vector3.new(4.8, 5, 4.8)
+elseif parent and parent.Parent and parent.Parent.Name == "APU" and parent.Name == "Pilot" then
+descendant.Transparency = 0.75 descendant.Size = Vector3.new(5, 5, 5) end end if descendant.Name == "Hitbox" then
+if descendant.Parent and descendant.Parent.Name ~= "APU" then
+descendant.Size = Vector3.new(6, 7, 6) descendant.Transparency = 0.75 end elseif descendant.Name:match("^GunBase%d$") then
+descendant.Size = Vector3.new(10, 14, 10) descendant.Transparency = 0.5 end end end end end end
+workspace.ChildAdded:Connect(function(v) if v:IsA("Model") then task.wait(0.125) PutOnExtend(v) end end)
+for _, v in ipairs(workspace:GetChildren()) do if v:IsA("Model") then task.wait(0.125) PutOnExtend(v) end end
+local restrictedCategories = { Assault = true, Engineer = true, Recon = true, Medic = true, Scout = true, Specialist = true, Title = true }
+local function isInRestrictedCategory(descendant) local parent = descendant.Parent while parent do
+if restrictedCategories[parent.Name] then return true end parent = parent.Parent end return false end
+local function setProximityPromptDuration() for _, descendant in ipairs(workspace:GetDescendants()) do 
+if descendant:IsA("ProximityPrompt") and not isInRestrictedCategory(descendant) then 
+descendant.HoldDuration = 0.5 end end end setProximityPromptDuration() 
+workspace.DescendantAdded:Connect(function(descendant) if descendant:IsA("ProximityPrompt") 
+and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.5 end end)
+  	end
+})
+----
+---
+---
+----
+specialistTab:AddBind({
+	Name = "epilogue1",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+    for i = 0, 16 do
+    -- bags
+local meow = workspace:WaitForChild("Map"):WaitForChild("PreviewPlacements"):WaitForChild("BagPlacementPreview")
+game:GetService("Players").LocalPlayer.Character.ExplosiveBag.Place:FireServer(meow)
+    end
+  	end
+})
+specialistTab:AddBind({
+	Name = "epilogue2",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+    for i = 0, 16 do
+-- admin
+local meow = workspace:WaitForChild("Map"):WaitForChild("TeleporterRoom"):WaitForChild("KeycardSlot")
+game:GetService("Players").LocalPlayer.Backpack.Keycard.Place:FireServer(meow)
+    end
+  	end
+})
+specialistTab:AddBind({
+	Name = "epi bobms",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+for i = 0,10 do wait(0.04) local bombChargesInWorkspace = workspace:FindFirstChild("Map"):FindFirstChild("BombPlacements"):GetChildren()
+for _, placement in ipairs(bombChargesInWorkspace) do if placement:IsA("BasePart") then
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+local backpack = player:FindFirstChild("Backpack") if backpack then
+local bombCharge = backpack:FindFirstChild("BombCharge") if bombCharge then
+bombCharge.Place:FireServer(placement) end end local character = player.Character if character then
+local bombChargeInCharacter = character:FindFirstChild("BombCharge") if bombChargeInCharacter then
+bombChargeInCharacter.Place:FireServer(placement) end end end for _, item in ipairs(workspace:GetChildren()) do
+if item:IsA("Model") and item:FindFirstChild("Humanoid") then local bombChargeInNPC = item:FindFirstChild("BombCharge")
+if bombChargeInNPC then bombChargeInNPC.Place:FireServer(placement)
+end end end end end end
+  	end
+})
+----
+---
+---
+----
+-- MEDIC TAB
+local medicTab = Window:MakeTab({
+	Name = "medic",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+local exploitTab = Window:MakeTab({
+	Name = "exploit",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "the thing 1",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local player = game.Players.LocalPlayer
+local character = player.Character local hrp = character:WaitForChild("HumanoidRootPart")
+local lp = game.Players.LocalPlayer.Character local Weapon = lp:FindFirstChildOfClass("Tool")
+local arg1 = Vector3.new(hrp.Position.X, hrp.Position.Y - 40, hrp.Position.Z)
+if Weapon.name == "Terminal Velocity" then
+for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+Weapon.Slam:FireServer(arg1, enemy.Parent, true) Weapon.Slam:FireServer(arg1, enemy.Parent, true) end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "the thing 2",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local player = game.Players.LocalPlayer local character = player.Character
+local hrp = character:WaitForChild("HumanoidRootPart") local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool") if Weapon.name == "Bolter" then
+for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+local arg1 = Vector3.new(enemy.Parent.Head.Position.X, enemy.Parent.Head.Position.Y + 10, enemy.Parent.Head.Position.Z)
+Weapon.VerifyCoinHit:FireServer(arg1) end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "TORQUE 3",
+	Default = Enum.KeyCode.B,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Torqueblade" then local a1 = Vector3.new(0, 0, 0) local a3 = "meow"
+for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+for i = 0, 55 do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "TORQUE ALL MOUSE",
+	Default = Enum.UserInputType.MouseButton3,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer
+local char = lp.Character local Weapon = char:FindFirstChildOfClass("Tool")
+local range = 33 if Weapon and Weapon.Name == "Torqueblade" then
+local a1 = Vector3.new(0, 0, 0) local a3 = "meow" local mouse = lp:GetMouse()
+for _, enemy in pairs(workspace:GetDescendants()) do
+if enemy:IsA("Humanoid") and enemy.Parent then
+local enemyHRP = enemy.Parent:FindFirstChild("HumanoidRootPart") or enemy.Parent:FindFirstChild("Handle") or 
+enemy.Parent:FindFirstChild("Hitbox") or enemy.Parent:FindFirstChild("Head") or
+enemy.Parent:FindFirstChild("Base") if enemyHRP then local mousePos = mouse.Hit.p
+local distance = (enemyHRP.Position - mousePos).Magnitude if distance <= range then
+for i = 0, 55 do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "MELEE AOE",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool")
+local meow = math.random(1,1000)
+-- table blah blah
+local blacklist = {"Platform", "Landmine", "MADS", "APU","Shield", "Pilot", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform","dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
+local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
+if name == enemyName then return true end end return false end
+if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
+for _, enemy in pairs(workspace:GetDescendants()) do
+if enemy:IsA("Humanoid") then local enemyName = enemy.Parent.Name
+if not isBlacklisted(enemyName) then local enemyPosition = enemy.Parent.HumanoidRootPart.Position
+local distance = (playerPosition - enemyPosition).magnitude
+if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow)
+end end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "PILOT/APU 5",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character 
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool") 
+local meow = math.random(1,1000)
+-- table blah blah
+local blacklist = {"Platform", "Landmine", "MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform","dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
+local function isBlacklisted(enemyName) 
+for _, name in ipairs(blacklist) do
+if name == enemyName then return true end end return false end
+if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
+for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+local enemyName = enemy.Parent.Name if not isBlacklisted(enemyName) and enemyName == "Pilot" then
+local enemyPosition = enemy.Parent.Head.Position local distance = (playerPosition - enemyPosition).magnitude
+if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "TRIDENT AEO",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character 
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool") local meow = math.random(1,1000)
+-- table blah blah
+local blacklist = {"Platform", "Landmine","MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform", "dead guy 4", "dead guy 11"}
+local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
+if name == enemyName then return true end end return false end
+if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
+for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+local enemyName = enemy.Parent.Name if not isBlacklisted(enemyName) and enemyName == "Orb" then
+local enemyPosition = enemy.Parent.Orb.Position local distance = (playerPosition - enemyPosition).magnitude
+if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "TANK/PROM AOE",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character 
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool") 
+local meow = math.random(1,1000)
+-- table blah blah
+local blacklist = {"Platform", "Landmine","MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "Stonehedge", "WreckedPlatform", "dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
+local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
+if name == enemyName then return true end end return false end
+if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
+for _, enemy in pairs(workspace:GetDescendants()) do 
+if enemy:IsA("Humanoid") then local enemyName = enemy.Parent.Name
+if not isBlacklisted(enemyName) and enemyName == "PropaneTank" then
+local enemyPosition = enemy.Parent.Hitbox.Position local distance = (playerPosition - enemyPosition).magnitude
+if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "bring closer or smth idk",
+	Default = Enum.KeyCode.M,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool")
+local meow = math.random(1,1000)
+-- table blah blah
+local blacklist = {"Shielder", "Cloaker"}
+local function isBlacklisted(enemyName)
+for _, name in ipairs(blacklist) do
+if name == enemyName then return true end end return false end
+if Weapon and Weapon.Name == "Harpoon Gun" then
+for _, enemy in pairs(workspace:GetDescendants()) do
+if enemy:IsA("Humanoid") then
+local enemyName = enemy.Parent.Name  -- Get the enemy's name
+if not isBlacklisted(enemyName) then -- Check if the enemy is blacklisted
+Weapon.VerifyGrapple:FireServer(enemy)
+end end end end
+  	end    
+})
+----
+---
+---
+----
+exploitTab:AddBind({
+	Name = "15 SEC INVINCIBLE",
+	Default = Enum.KeyCode.V,
+	Hold = false,
+	Callback = function()
+OrionLib:MakeNotification({
+	Name = "started!",
+	Content = "invincible for 10s",
+	Image = "rbxassetid://4483345998",
+	Time = 3
+})
+--- 15 SEC HEAL/INVINC
+local toolNames = {"Medical Bow", "Recurve", "Vitabow"}
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+local toolNameDict = {}
+for _, name in ipairs(toolNames) do toolNameDict[name] = true end
+local function fireVerifyHit(tool)
+local a1 = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+if not a1 then return end local a2 = Vector3.zero
+local a3 = Vector3.new(0, 0, 10000) local meow = tool.Parent
+local toolInstance = meow:FindFirstChild(tool.Name)
+if toolInstance and toolInstance:FindFirstChild("VerifyHit") then
+toolInstance.VerifyHit:FireServer(a1, a2, a3) end end local function tagTools(tool)
+if tool:IsA("Tool") and toolNameDict[tool.Name] then
+CollectionService:AddTag(tool, "TrackedTool") fireVerifyHit(tool) end end
+local function untagTools(tool) if CollectionService:HasTag(tool, "TrackedTool") then
+CollectionService:RemoveTag(tool, "TrackedTool") end end local function trackWorkspaceTools()
+for _, bow in ipairs(workspace:GetDescendants()) do tagTools(bow) end end
+local function trackPlayerTools(player) for _, descendant in ipairs(player:GetDescendants()) do
+tagTools(descendant) end end workspace.DescendantAdded:Connect(tagTools)
+workspace.DescendantRemoving:Connect(untagTools) Players.PlayerAdded:Connect(function(player)
+player.DescendantAdded:Connect(tagTools) player.DescendantRemoving:Connect(untagTools)
+player.CharacterAdded:Connect(function(character) trackPlayerTools(player)
+end) end) trackWorkspaceTools() for _, player in pairs(Players:GetPlayers()) do
+trackPlayerTools(player) end local startTime = tick()
+local heartbeatConnection
+
+heartbeatConnection = RunService.Heartbeat:Connect(function(step)
+    local currentTime = tick() -- Get the current time in each loop
+    if currentTime - startTime >= 10 then
+    print("5 seconds passed, stopping tool tracking.")
+    OrionLib:MakeNotification({
+	Name = "it's over",
+	Content = "it's done do it again brah",
+	Image = "rbxassetid://4483345998",
+	Time = 3
+})
+    heartbeatConnection:Disconnect()
+    return end
+trackWorkspaceTools()
+for _, player in pairs(Players:GetPlayers()) do
+trackPlayerTools(player)
+end end)
+  	end    
+})
+
+exploitTab:AddBind({
+	Name = "everything",
+	Default = Enum.KeyCode.P,
+	Hold = false,
+	Callback = function()
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+local validWeapons = { "SMG", "Twinface","Bolter", "Harpoon Gun", "Rifle", "Vitabow", "Recurve", "Voltaic Impact","Gunslingers","Akimbo","Armour Peeler","Gift of Fire", "DMR","Stonewall", "Steelforge", "Burst Rifle", "Shotgun", "Sprinter's Streak", "Hallsweeper"}
+
+if table.find(validWeapons, Weapon.Name) then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
+Weapon:SetAttribute("Ammo", 500) end)
+Weapon:SetAttribute("BulletSpeed", 9999) Weapon:SetAttribute("Spread", 0)
+Weapon:SetAttribute("BurstCount", 10) Weapon:SetAttribute("ClipSize", 501) end
+--- SPECIAL
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Rocket Stormer" then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:SetAttribute("BulletSpeed", 6000) Weapon:SetAttribute("Spread", 0)
+Weapon:SetAttribute("BurstCount", 10) Weapon:SetAttribute("ClipSize", 501)
+Weapon:SetAttribute("Firerate", 275) end
+--- SPECIAL
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Medical Bow" then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
+Weapon:SetAttribute("Ammo", 500) end)
+Weapon:SetAttribute("BulletSpeed", 9999) Weapon:SetAttribute("Spread", 0)
+Weapon:SetAttribute("BurstCount", 10) Weapon:SetAttribute("ClipSize", 501)
+Weapon:SetAttribute("Firerate", 38) Weapon:SetAttribute("ForcefieldDuration", 50) end
+--- SPECIAL
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Aerorig" then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:GetAttributeChangedSignal("Ammo"):Connect( function() 
+Weapon:SetAttribute("Ammo", 500) end)
+Weapon:SetAttribute("AccelerationPerSecond", 7) Weapon:SetAttribute("FuelInSeconds", 10000)
+Weapon:SetAttribute("GrappleMaxDistance", 100000) Weapon:SetAttribute("GrappleProjectileSpeed", 10000)
+Weapon:SetAttribute("GravityMultiplier", 10) Weapon:SetAttribute("PlayerControlAcceleration", 6.5)
+Weapon:SetAttribute("SnapoffDistance", 2) Weapon:SetAttribute("VelocityLimit", 190)
+Weapon:SetAttribute("MaximumDamage", 6000) Weapon:SetAttribute("HealthOnKill", 100)
+Weapon:SetAttribute("DamageBeforeBreak", 10000) Weapon:SetAttribute("AmmoPerBlade", 0.1) end
+--- SPECIAL
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Terminal Velocity" then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
+Weapon:SetAttribute("Ammo", 500) end)
+Weapon:SetAttribute("RefillRate", 99999) Weapon:SetAttribute("JetCooldown", 0.4)
+Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 260) end
+--- SPECIAL
+local lp = game.Players.LocalPlayer.Character
+local Weapon = lp:FindFirstChildOfClass("Tool")
+if Weapon.name == "Jetpack" then
+OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
+Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
+Weapon:SetAttribute("Ammo", 500) end)
+Weapon:SetAttribute("JetCooldown", 0.4) Weapon:SetAttribute("RefillRate", 99999)
+Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 205) end
+---
+---
+---
+---
+end })
+OrionLib:Init()
