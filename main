@@ -77,27 +77,36 @@ and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.5 en
 ---
 ----
 specialistTab:AddBind({
-	Name = "epilogue1",
+	Name = "epi bags",
 	Default = Enum.KeyCode.M,
 	Hold = false,
 	Callback = function()
-    for i = 0, 16 do
-    -- bags
 local meow = workspace:WaitForChild("Map"):WaitForChild("PreviewPlacements"):WaitForChild("BagPlacementPreview")
-game:GetService("Players").LocalPlayer.Character.ExplosiveBag.Place:FireServer(meow)
-    end
+local function findExplosiveBagAndPlace()
+local Players = game:GetService("Players") for _, player in pairs(Players:GetPlayers()) do local character = player.Character
+local backpack = player:FindFirstChild("Backpack") local explosiveBag = nil if character then
+explosiveBag = character:FindFirstChild("ExplosiveBag") end if not explosiveBag and backpack then
+explosiveBag = backpack:FindFirstChild("ExplosiveBag") end if explosiveBag then
+explosiveBag.Place:FireServer(meow) end end end for i = 0, 10 do wait(0.03) findExplosiveBagAndPlace() end
   	end
 })
 specialistTab:AddBind({
-	Name = "epilogue2",
+	Name = "epi admin",
 	Default = Enum.KeyCode.M,
 	Hold = false,
 	Callback = function()
-    for i = 0, 16 do
--- admin
-local meow = workspace:WaitForChild("Map"):WaitForChild("TeleporterRoom"):WaitForChild("KeycardSlot")
-game:GetService("Players").LocalPlayer.Backpack.Keycard.Place:FireServer(meow)
-    end
+local keycardSlots = {} 
+local currentSlotIndex = 1
+local function getNextKeycardSlot()
+local allKeycardSlots = workspace:WaitForChild("Map"):WaitForChild("TeleporterRoom"):GetChildren()
+for _, object in pairs(allKeycardSlots) do if object.Name == "KeycardSlot" then
+if not table.find(keycardSlots, object) then table.insert(keycardSlots, object) return object end end end return nil end
+local function findKeycardAndPlace() local Players = game:GetService("Players") for _, player in pairs(Players:GetPlayers()) do 
+local character = player.Character local backpack = player:FindFirstChild("Backpack")
+local keycard = nil if character then keycard = character:FindFirstChild("Keycard") end
+if not keycard and backpack then keycard = backpack:FindFirstChild("Keycard") end if keycard then
+local meow = getNextKeycardSlot() if meow then keycard.Place:FireServer(meow) else print("no card :(")
+end end end end for i = 1, 10 do findKeycardAndPlace() wait(0.1) end
   	end
 })
 specialistTab:AddBind({
