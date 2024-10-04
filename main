@@ -138,7 +138,7 @@ local exploitTab = Window:MakeTab({
 ---
 ----
 exploitTab:AddBind({
-	Name = "the thing 1",
+	Name = "TERMINAL KILL",
 	Default = Enum.KeyCode.M,
 	Hold = false,
 	Callback = function()
@@ -156,7 +156,7 @@ Weapon.Slam:FireServer(arg1, enemy.Parent, true) Weapon.Slam:FireServer(arg1, en
 ---
 ----
 exploitTab:AddBind({
-	Name = "the thing 2",
+	Name = "BOLTER KILL",
 	Default = Enum.KeyCode.M,
 	Hold = false,
 	Callback = function()
@@ -173,7 +173,7 @@ Weapon.VerifyCoinHit:FireServer(arg1) end end end
 ---
 ----
 exploitTab:AddBind({
-	Name = "TORQUE 3",
+	Name = "TORQUE EVERYTHING",
 	Default = Enum.KeyCode.B,
 	Hold = false,
 	Callback = function()
@@ -215,95 +215,17 @@ exploitTab:AddBind({
 	Hold = false,
 	Callback = function()
 local lp = game.Players.LocalPlayer.Character
-local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
-local Weapon = lp:FindFirstChildOfClass("Tool")
-local meow = math.random(1,1000)
--- table blah blah
-local blacklist = {"Platform", "Landmine", "MADS", "APU","Shield", "Pilot", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform","dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
-local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
-if name == enemyName then return true end end return false end
-if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
-for _, enemy in pairs(workspace:GetDescendants()) do
-if enemy:IsA("Humanoid") then local enemyName = enemy.Parent.Name
-if not isBlacklisted(enemyName) then local enemyPosition = enemy.Parent.HumanoidRootPart.Position
-local distance = (playerPosition - enemyPosition).magnitude
-if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow)
-end end end end end
-  	end    
-})
-----
----
----
-----
-exploitTab:AddBind({
-	Name = "PILOT/APU 5",
-	Default = Enum.KeyCode.M,
-	Hold = false,
-	Callback = function()
-local lp = game.Players.LocalPlayer.Character 
-local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
-local Weapon = lp:FindFirstChildOfClass("Tool") 
-local meow = math.random(1,1000)
--- table blah blah
-local blacklist = {"Platform", "Landmine", "MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform","dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
-local function isBlacklisted(enemyName) 
-for _, name in ipairs(blacklist) do
-if name == enemyName then return true end end return false end
-if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
-for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
-local enemyName = enemy.Parent.Name if not isBlacklisted(enemyName) and enemyName == "Pilot" then
-local enemyPosition = enemy.Parent.Head.Position local distance = (playerPosition - enemyPosition).magnitude
-if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
-  	end    
-})
-----
----
----
-----
-exploitTab:AddBind({
-	Name = "TRIDENT AEO",
-	Default = Enum.KeyCode.M,
-	Hold = false,
-	Callback = function()
-local lp = game.Players.LocalPlayer.Character 
-local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
-local Weapon = lp:FindFirstChildOfClass("Tool") local meow = math.random(1,1000)
--- table blah blah
-local blacklist = {"Platform", "Landmine","MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "PropaneTank", "Stonehedge", "WreckedPlatform", "dead guy 4", "dead guy 11"}
-local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
-if name == enemyName then return true end end return false end
-if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
-for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
-local enemyName = enemy.Parent.Name if not isBlacklisted(enemyName) and enemyName == "Orb" then
-local enemyPosition = enemy.Parent.Orb.Position local distance = (playerPosition - enemyPosition).magnitude
-if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
-  	end    
-})
-----
----
----
-----
-exploitTab:AddBind({
-	Name = "TANK/PROM AOE",
-	Default = Enum.KeyCode.M,
-	Hold = false,
-	Callback = function()
-local lp = game.Players.LocalPlayer.Character 
-local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
-local Weapon = lp:FindFirstChildOfClass("Tool") 
-local meow = math.random(1,1000)
--- table blah blah
-local blacklist = {"Platform", "Landmine","MADS", "APU","Shield", "NoobBarrier","Emplacement1", "Emplacement2","Lvl1Sentry","Lvl2Sentry","Lvl3Sentry","Lvl1Teleporter","Lvl2Teleporter","LvlTeleporter", "Emplacement3", "Emplacement4","FAST_point","PDC", "Barrier","Lifeline","Governor", "Stonehedge", "WreckedPlatform", "dead guy 1", "dead guy 2", "dead guy 3", "dead guy 4", "dead guy 5", "dead guy 6", "dead guy 7", "dead guy 8", "dead guy 9", "dead guy 10", "dead guy 11", "Man", "Ragdoll"}
-local function isBlacklisted(enemyName) for _, name in ipairs(blacklist) do
-if name == enemyName then return true end end return false end
-if Weapon and Weapon.Name == "Shovel" or "Overcharger" or "Rallying Cry" then
-for _, enemy in pairs(workspace:GetDescendants()) do 
-if enemy:IsA("Humanoid") then local enemyName = enemy.Parent.Name
-if not isBlacklisted(enemyName) and enemyName == "PropaneTank" then
-local enemyPosition = enemy.Parent.Hitbox.Position local distance = (playerPosition - enemyPosition).magnitude
-if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
-  	end    
-})
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position local Weapon = lp:FindFirstChildOfClass("Tool") local meow = math.random(1, 1000)
+local validWeapons = {"Shovel", "Overcharger", "Rallying Cry", "Machete", "Torqueblade"}
+local function isValidWeapon(weaponName)
+for _, validWeapon in ipairs(validWeapons) do if weaponName == validWeapon then return true end end return false end
+local function hasValidPart(parent) return parent:FindFirstChild("HumanoidRootPart") or
+parent:FindFirstChild("Base") or parent:FindFirstChild("Hitbox") or parent:FindFirstChild("Handle")
+end if Weapon and isValidWeapon(Weapon.Name) then for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
+if enemy.Name == "Humanoid" and hasValidPart(enemy.Parent) then local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
+enemy.Parent:FindFirstChild("Base") or enemy.Parent:FindFirstChild("Hitbox") or enemy.Parent:FindFirstChild("Handle")
+if enemyPosition then enemyPosition = enemyPosition.Position local distance = (playerPosition - enemyPosition).magnitude
+if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end end end })
 ----
 ---
 ---
