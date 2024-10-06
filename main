@@ -1,4 +1,4 @@
--- v.0.7
+-- v.0.7.5
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -20,9 +20,7 @@ function updatePlayerList() local players = {"no"} for _, player in pairs(game:G
 table.insert(players, player.Name) end return players end playerTab:AddDropdown({
 Name = "player stuff", Default = "no", Options = updatePlayerList(), Callback = function(Value)
 selectedPlayer = Value == "no" and "no" or game:GetService("Players"):FindFirstChild(Value)
-if selectedPlayer == "no" then firing = false end end }) 
-spawn(checkForWeapons)
-
+if selectedPlayer == "no" then firing = false end end }) spawn(checkForWeapons)
 playerTab:AddButton({ Name = "reload ui", Callback = function() wait(0.2) OrionLib:MakeNotification({
 	Name = "reloading!",
 	Content = "meow",
@@ -234,22 +232,18 @@ for i = 0, 55 do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end end
 ---
 ----
 exploitTab:AddBind({
-	Name = "MELEE AOE",
-	Default = Enum.KeyCode.M,
-	Hold = false,
-	Callback = function()
+Name = "MELEE AOE",
+Default = Enum.KeyCode.M,
+Hold = false,
+Callback = function() 
 local lp = game.Players.LocalPlayer.Character
 local playerPosition = lp:WaitForChild("HumanoidRootPart").Position local Weapon = lp:FindFirstChildOfClass("Tool") local meow = math.random(1, 1000)
-local validWeapons = {"Shovel", "Overcharger", "Rallying Cry", "Machete", "Torqueblade"}
-local function isValidWeapon(weaponName)
-for _, validWeapon in ipairs(validWeapons) do if weaponName == validWeapon then return true end end return false end
-local function hasValidPart(parent) return parent:FindFirstChild("HumanoidRootPart") or
-parent:FindFirstChild("Base") or parent:FindFirstChild("Hitbox") or parent:FindFirstChild("Handle")
-end if Weapon and isValidWeapon(Weapon.Name) then for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
-if enemy.Name == "Humanoid" and hasValidPart(enemy.Parent) then local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
-enemy.Parent:FindFirstChild("Base") or enemy.Parent:FindFirstChild("Hitbox") or enemy.Parent:FindFirstChild("Handle")
-if enemyPosition then enemyPosition = enemyPosition.Position local distance = (playerPosition - enemyPosition).magnitude
-if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end end end })
+local validWeapons = {"Shovel", "Overcharger", "Rallying Cry", "Machete", "Torqueblade"} local function isValidWeapon(name)
+for _, v in ipairs(validWeapons) do if name == v then return true end end return false end local function hasValidPart(parent)
+return parent:FindFirstChild("HumanoidRootPart") or parent:FindFirstChild("Base") or parent:FindFirstChild("Hitbox") or parent:FindFirstChild("Handle") end
+if Weapon and isValidWeapon(Weapon.Name) then for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") and enemy.Parent ~= lp and hasValidPart(enemy.Parent) then
+local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or enemy.Parent:FindFirstChild("Base") or enemy.Parent:FindFirstChild("Hitbox") or enemy.Parent:FindFirstChild("Handle") if enemyPosition then
+local distance = (playerPosition - enemyPosition.Position).magnitude if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end end })
 ----
 ---
 ---
@@ -282,64 +276,6 @@ end end end end
 ---
 ----
 exploitTab:AddBind({
-	Name = "15 SEC INVINCIBLE",
-	Default = Enum.KeyCode.V,
-	Hold = false,
-	Callback = function()
-OrionLib:MakeNotification({
-	Name = "started!",
-	Content = "invincible for 10s",
-	Image = "rbxassetid://4483345998",
-	Time = 3
-})
---- 15 SEC HEAL/INVINC
-local toolNames = {"Medical Bow", "Recurve", "Vitabow"}
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local CollectionService = game:GetService("CollectionService")
-local toolNameDict = {}
-for _, name in ipairs(toolNames) do toolNameDict[name] = true end
-local function fireVerifyHit(tool)
-local a1 = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-if not a1 then return end local a2 = Vector3.zero
-local a3 = Vector3.new(0, 0, 10000) local meow = tool.Parent
-local toolInstance = meow:FindFirstChild(tool.Name)
-if toolInstance and toolInstance:FindFirstChild("VerifyHit") then
-toolInstance.VerifyHit:FireServer(a1, a2, a3) end end local function tagTools(tool)
-if tool:IsA("Tool") and toolNameDict[tool.Name] then
-CollectionService:AddTag(tool, "TrackedTool") fireVerifyHit(tool) end end
-local function untagTools(tool) if CollectionService:HasTag(tool, "TrackedTool") then
-CollectionService:RemoveTag(tool, "TrackedTool") end end local function trackWorkspaceTools()
-for _, bow in ipairs(workspace:GetDescendants()) do tagTools(bow) end end
-local function trackPlayerTools(player) for _, descendant in ipairs(player:GetDescendants()) do
-tagTools(descendant) end end workspace.DescendantAdded:Connect(tagTools)
-workspace.DescendantRemoving:Connect(untagTools) Players.PlayerAdded:Connect(function(player)
-player.DescendantAdded:Connect(tagTools) player.DescendantRemoving:Connect(untagTools)
-player.CharacterAdded:Connect(function(character) trackPlayerTools(player)
-end) end) trackWorkspaceTools() for _, player in pairs(Players:GetPlayers()) do
-trackPlayerTools(player) end local startTime = tick()
-local heartbeatConnection
-
-heartbeatConnection = RunService.Heartbeat:Connect(function(step)
-    local currentTime = tick() -- Get the current time in each loop
-    if currentTime - startTime >= 10 then
-    print("5 seconds passed, stopping tool tracking.")
-    OrionLib:MakeNotification({
-	Name = "it's over",
-	Content = "it's done do it again brah",
-	Image = "rbxassetid://4483345998",
-	Time = 3
-})
-    heartbeatConnection:Disconnect()
-    return end
-trackWorkspaceTools()
-for _, player in pairs(Players:GetPlayers()) do
-trackPlayerTools(player)
-end end)
-  	end    
-})
-
-exploitTab:AddBind({
 	Name = "everything",
 	Default = Enum.KeyCode.P,
 	Hold = false,
@@ -347,7 +283,6 @@ exploitTab:AddBind({
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 local validWeapons = { "SMG", "Twinface","Bolter", "Harpoon Gun", "Rifle", "Vitabow", "Recurve", "Voltaic Impact","Gunslingers","Akimbo","Armour Peeler","Gift of Fire", "DMR","Stonewall", "Steelforge", "Burst Rifle", "Shotgun", "Sprinter's Streak", "Hallsweeper"}
-
 if table.find(validWeapons, Weapon.Name) then
 OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
