@@ -1,4 +1,4 @@
--- v.0.7.5
+-- v.0.7.6
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -30,7 +30,7 @@ playerTab:AddButton({ Name = "reload ui", Callback = function() wait(0.2) OrionL
 ----
 ---
 ---
----- AMMO TAB
+---- AMMO TAB 1
 local Players = game:GetService("Players") local LocalPlayer = Players.LocalPlayer local TargetPlayer local running = false
 local AmmoBoxPlayers = {} local toolNames = {"Ammo Box", "Combat Toolkit", "PROXY"} for _, player in ipairs(Players:GetPlayers()) do
 if player ~= LocalPlayer then table.insert(AmmoBoxPlayers, player.Name) end end local function findTools(player) local tools = {} local backpack = player:FindFirstChild("Backpack") local character = player.Character
@@ -40,7 +40,24 @@ for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") and tool.N
 while running do local tools = findTools(player) if #tools > 0 then for _, tool in ipairs(tools) do for i = 0, 100 do tool.BuyCharges:FireServer() end end
 end wait(0.4) end end local AmmoBoxTab = Window:MakeTab({ Name = "be annoying", Icon = "rbxassetid://4483345998", PremiumOnly = false }) AmmoBoxTab:AddDropdown({ Name = "select player", Options = AmmoBoxPlayers,
 Callback = function(selectedPlayer) TargetPlayer = Players:FindFirstChild(selectedPlayer) end }) AmmoBoxTab:AddToggle({ Name = "on/off", Default = false,
-Callback = function(value) running = value if running and TargetPlayer then startAmmoBoxEvent(TargetPlayer)end end })
+Callback = function(value) running = value if running and TargetPlayer then startAmmoBoxEvent(TargetPlayer)end 
+    end
+})
+--- AMMO TAB 2
+local player = game:GetService("Players").LocalPlayer local players = game:GetService("Players")
+local isChecking = false local checkLoop local function fireVerifyFire(event)
+if event and event:IsA("RemoteEvent") then event:FireServer()
+end end local function checkAndFireTools() while isChecking do
+for _, otherPlayer in ipairs(players:GetPlayers()) do if otherPlayer ~= player then
+local character = otherPlayer.Character if character then for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") then
+local verifyFireEvent = tool:FindFirstChild("VerifyFire") fireVerifyFire(verifyFireEvent)
+end end end local backpack = otherPlayer.Backpack for _, tool in ipairs(backpack:GetChildren()) do if tool:IsA("Tool") then
+local verifyFireEvent = tool:FindFirstChild("VerifyFire") fireVerifyFire(verifyFireEvent) end end end
+end wait(0.26) end end AmmoBoxTab:AddToggle({ Name = "weapons 1 - no ammo", Default = false, Callback = function(value)
+isChecking = value if isChecking then checkLoop = checkAndFireTools()
+else isChecking = false if checkLoop then checkLoop = nil end end
+    end
+})
 ----
 ---
 ---
@@ -53,7 +70,7 @@ local specialistTab = Window:MakeTab({
 })
 specialistTab:AddBind({
 	Name = "hitbox",
-	Default = Enum.KeyCode.M,
+	Default = Enum.KeyCode.V,
 	Hold = false,
 	Callback = function()
 if not game:IsLoaded() then game.Loaded:Wait() end
@@ -80,9 +97,9 @@ local function isInRestrictedCategory(descendant) local parent = descendant.Pare
 if restrictedCategories[parent.Name] then return true end parent = parent.Parent end return false end
 local function setProximityPromptDuration() for _, descendant in ipairs(workspace:GetDescendants()) do 
 if descendant:IsA("ProximityPrompt") and not isInRestrictedCategory(descendant) then 
-descendant.HoldDuration = 0.5 end end end setProximityPromptDuration() 
+descendant.HoldDuration = 0.35 end end end setProximityPromptDuration() 
 workspace.DescendantAdded:Connect(function(descendant) if descendant:IsA("ProximityPrompt") 
-and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.5 end end)
+and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.35 end end)
   	end
 })
 ----
@@ -343,4 +360,5 @@ Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 205) e
 ---
 ---
 end })
+
 OrionLib:Init()
