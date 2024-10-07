@@ -1,4 +1,4 @@
--- v.0.7.7
+-- v.0.7.8
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -44,17 +44,19 @@ Callback = function(value) running = value if running and TargetPlayer then star
     end
 })
 --- AMMO TAB 2
-local player = game:GetService("Players").LocalPlayer local players = game:GetService("Players") local isChecking = false local checkLoop 
-local function fireEvents(event, times) if event and event:IsA("RemoteEvent") then for i = 1, times do event:FireServer() end end end 
-local function checkAndFireTools() while isChecking do for _, otherPlayer in ipairs(players:GetPlayers()) do if otherPlayer ~= player then 
-local character = otherPlayer.Character if character then for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") then 
-local verifyFireEvent = tool:FindFirstChild("VerifyFire") fireEvents(verifyFireEvent, 40) local createMagEvent = tool:FindFirstChild("CreateMag")
-fireEvents(createMagEvent, 1) local verifyReloadEvent = tool:FindFirstChild("VerifyReload") fireEvents(verifyReloadEvent, 1) end end 
-end local backpack = otherPlayer.Backpack for _, tool in ipairs(backpack:GetChildren()) do if tool:IsA("Tool") then 
-local verifyFireEvent = tool:FindFirstChild("VerifyFire") fireEvents(verifyFireEvent, 40) local createMagEvent = tool:FindFirstChild("CreateMag") fireEvents(createMagEvent, 1) 
-local verifyReloadEvent = tool:FindFirstChild("VerifyReload") fireEvents(verifyReloadEvent, 1) end end end end wait(0.26) end end AmmoBoxTab:AddToggle({ 
-Name = "weapons 1 - no ammo", Default = false, Callback = function(value) isChecking = value if isChecking then 
-checkLoop = checkAndFireTools() else isChecking = false if checkLoop then checkLoop = nil end end 
+local player = game:GetService("Players").LocalPlayer 
+local players = game:GetService("Players") local isChecking = false local checkLoop local function fireEvents(event, times)
+if event and event:IsA("RemoteEvent") then for i = 1, times do event:FireServer() end end end local function checkAndFireTools() while isChecking do 
+for _, otherPlayer in ipairs(players:GetPlayers()) do if otherPlayer ~= player then local character = otherPlayer.Character 
+if character then for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") then local ammo = tool:GetAttribute("Ammo") 
+local verifyFireEvent = tool:FindFirstChild("VerifyFire") local createMagEvent = tool:FindFirstChild("CreateMag") if ammo and ammo > 0 then 
+fireEvents(verifyFireEvent, 15) fireEvents(createMagEvent, 1) end local verifyReloadEvent = tool:FindFirstChild("VerifyReload") 
+if ammo and ammo == 0 then fireEvents(verifyReloadEvent, 1) end end end end local backpack = otherPlayer.Backpack 
+for _, tool in ipairs(backpack:GetChildren()) do if tool:IsA("Tool") then local ammo = tool:GetAttribute("Ammo") local verifyFireEvent = tool:FindFirstChild("VerifyFire") 
+local createMagEvent = tool:FindFirstChild("CreateMag") if ammo and ammo > 0 then fireEvents(verifyFireEvent, 15) fireEvents(createMagEvent, 1)
+end local verifyReloadEvent = tool:FindFirstChild("VerifyReload") if ammo and ammo == 0 then fireEvents(verifyReloadEvent, 1) end end end end end 
+wait(0.4) end end AmmoBoxTab:AddToggle({ Name = "weapons 1 - no ammo", Default = false, 
+Callback = function(value) isChecking = value if isChecking then checkLoop = checkAndFireTools() else isChecking = false if checkLoop then checkLoop = nil end end 
     end 
 })
 ----
