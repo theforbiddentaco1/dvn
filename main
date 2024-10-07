@@ -54,7 +54,7 @@ fireEvents(verifyFireEvent, 15) fireEvents(createMagEvent, 1) end local verifyRe
 if ammo and ammo == 0 then fireEvents(verifyReloadEvent, 1) end end end end local backpack = otherPlayer.Backpack 
 for _, tool in ipairs(backpack:GetChildren()) do if tool:IsA("Tool") then local ammo = tool:GetAttribute("Ammo") local verifyFireEvent = tool:FindFirstChild("VerifyFire") 
 local createMagEvent = tool:FindFirstChild("CreateMag") if ammo and ammo > 0 then fireEvents(verifyFireEvent, 15) fireEvents(createMagEvent, 1)
-end local verifyReloadEvent = tool:FindFirstChild("VerifyReload") if ammo and ammo == 0 then fireEvents(verifyReloadEvent, 1) end end end end end 
+end local verifyReloadEvent = tool:FindFirstChild("VerifyReload") if ammo and ammo == 0 then fireEvents(verifyReloadEvent, 1) fireEvents(createMagEvent, 1) end end end end end 
 wait(0.4) end end AmmoBoxTab:AddToggle({ Name = "weapons 1 - no ammo", Default = false, 
 Callback = function(value) isChecking = value if isChecking then checkLoop = checkAndFireTools() else isChecking = false if checkLoop then checkLoop = nil end end 
     end 
