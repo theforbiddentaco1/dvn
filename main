@@ -1,8 +1,7 @@
--- v.0.7.8
+-- v.0.7.9
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
-
 -- PLAYER TAB (meow)
 local targetWeapons = {"Recurve", "Vitabow", "Medical Bow"}
 local selectedPlayer = nil local activeWeapons = {} local firing = false
@@ -59,6 +58,19 @@ wait(0.4) end end AmmoBoxTab:AddToggle({ Name = "weapons 1 - no ammo", Default =
 Callback = function(value) isChecking = value if isChecking then checkLoop = checkAndFireTools() else isChecking = false if checkLoop then checkLoop = nil end end 
     end 
 })
+--- AMMO TAB 3
+local Players = game:GetService("Players") local player = Players.LocalPlayer local character = player.Character or player.CharacterAdded:Wait() local toolToggleEnabled = false
+local function isMatchingTool(toolName)
+local validTools = {"Shovel", "Overcharger", "Machete", "Rallying Cry"}
+for _, validTool in pairs(validTools) do if toolName == validTool then return true
+end end return false end local function fireVerifyHit(targetPlayer) local targetCharacter = targetPlayer.Character
+if targetCharacter and targetCharacter:FindFirstChild("Humanoid") then local humanoid = targetCharacter.Humanoid for _, tool in pairs(targetCharacter:GetChildren()) do
+if tool:IsA("Tool") and isMatchingTool(tool.Name) then if tool:FindFirstChild("VerifyHit") then local randomValue = math.random(1, 1000)
+tool.VerifyHit:FireServer(humanoid, randomValue) end end end end end local function startFiring() while toolToggleEnabled do
+for _, targetPlayer in pairs(Players:GetPlayers()) do if targetPlayer ~= player then fireVerifyHit(targetPlayer) end end wait(0.2) end end AmmoBoxTab:AddToggle({
+Name = "weapons 2 - no melees", Default = false, Callback = function(state) toolToggleEnabled = state if toolToggleEnabled then startFiring() end
+    end
+})
 ----
 ---
 ---
@@ -103,10 +115,7 @@ workspace.DescendantAdded:Connect(function(descendant) if descendant:IsA("Proxim
 and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.35 end end)
   	end
 })
-----
 ---
----
-----
 specialistTab:AddBind({
 	Name = "epi bags",
 	Default = Enum.KeyCode.M,
@@ -168,15 +177,15 @@ local medicTab = Window:MakeTab({
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
+----
+---
+---
+----
 local exploitTab = Window:MakeTab({
 	Name = "exploit",
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
-----
----
----
-----
 exploitTab:AddBind({
 	Name = "TERMINAL KILL",
 	Default = Enum.KeyCode.M,
@@ -191,10 +200,7 @@ for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") th
 Weapon.Slam:FireServer(arg1, enemy.Parent, true) Weapon.Slam:FireServer(arg1, enemy.Parent, true) end end end
   	end    
 })
-----
 ---
----
-----
 exploitTab:AddBind({
 	Name = "BOLTER KILL",
 	Default = Enum.KeyCode.M,
@@ -208,10 +214,7 @@ local arg1 = Vector3.new(enemy.Parent.Head.Position.X, enemy.Parent.Head.Positio
 Weapon.VerifyCoinHit:FireServer(arg1) end end end
   	end    
 })
-----
 ---
----
-----
 exploitTab:AddBind({
 	Name = "TORQUE EVERYTHING",
 	Default = Enum.KeyCode.B,
@@ -223,10 +226,7 @@ for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") th
 for i = 0, 55 do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end end
   	end    
 })
-----
 ---
----
-----
 exploitTab:AddBind({
 	Name = "TORQUE ALL MOUSE",
 	Default = Enum.UserInputType.MouseButton3,
@@ -245,10 +245,7 @@ local distance = (enemyHRP.Position - mousePos).Magnitude if distance <= range t
 for i = 0, 55 do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end end end end
   	end    
 })
-----
 ---
----
-----
 exploitTab:AddBind({
 Name = "MELEE AOE",
 Default = Enum.KeyCode.M,
@@ -262,10 +259,7 @@ return parent:FindFirstChild("HumanoidRootPart") or parent:FindFirstChild("Base"
 if Weapon and isValidWeapon(Weapon.Name) then for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") and enemy.Parent ~= lp and hasValidPart(enemy.Parent) then
 local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or enemy.Parent:FindFirstChild("Base") or enemy.Parent:FindFirstChild("Hitbox") or enemy.Parent:FindFirstChild("Handle") if enemyPosition then
 local distance = (playerPosition - enemyPosition.Position).magnitude if distance <= 80 then Weapon.VerifyHit:FireServer(enemy, meow) end end end end end end })
-----
 ---
----
-----
 exploitTab:AddBind({
 	Name = "bring closer or smth idk",
 	Default = Enum.KeyCode.M,
@@ -289,10 +283,7 @@ Weapon.VerifyGrapple:FireServer(enemy)
 end end end end
   	end    
 })
-----
 ---
----
-----
 exploitTab:AddBind({
 	Name = "everything",
 	Default = Enum.KeyCode.P,
@@ -356,10 +347,6 @@ Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("JetCooldown", 0.4) Weapon:SetAttribute("RefillRate", 99999)
 Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 205) end
----
----
----
----
 end })
 
 OrionLib:Init()
