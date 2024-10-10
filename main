@@ -1,4 +1,4 @@
--- v.0.7.9
+-- v.0.8.0
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -30,18 +30,18 @@ playerTab:AddButton({ Name = "reload ui", Callback = function() wait(0.125) Orio
 ---
 ---
 ---- AMMO TAB 1
-local Players = game:GetService("Players") local LocalPlayer = Players.LocalPlayer local TargetPlayer local running = false
-local AmmoBoxPlayers = {} local toolNames = {"Ammo Box", "Combat Toolkit", "PROXY"} for _, player in ipairs(Players:GetPlayers()) do
-if player ~= LocalPlayer then table.insert(AmmoBoxPlayers, player.Name) end end local function findTools(player) local tools = {} local backpack = player:FindFirstChild("Backpack") local character = player.Character
-if backpack then for _, toolName in ipairs(toolNames) do for _, tool in ipairs(backpack:GetChildren()) do
-if tool:IsA("Tool") and tool.Name == toolName then table.insert(tools, tool) end end end end if character then for _, toolName in ipairs(toolNames) do
-for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") and tool.Name == toolName then table.insert(tools, tool) end end end end return tools end local function startAmmoBoxEvent(player)
-while running do local tools = findTools(player) if #tools > 0 then for _, tool in ipairs(tools) do for i = 0, 100 do tool.BuyCharges:FireServer() end end
-end wait(0.4) end end local AmmoBoxTab = Window:MakeTab({ Name = "be annoying", Icon = "rbxassetid://4483345998", PremiumOnly = false }) AmmoBoxTab:AddDropdown({ Name = "select player", Options = AmmoBoxPlayers,
-Callback = function(selectedPlayer) TargetPlayer = Players:FindFirstChild(selectedPlayer) end }) AmmoBoxTab:AddToggle({ Name = "on/off", Default = false,
-Callback = function(value) running = value if running and TargetPlayer then startAmmoBoxEvent(TargetPlayer)end 
-    end
+local Players = game:GetService("Players") local LocalPlayer = Players.LocalPlayer local running = false
+local toolNames = {"Ammo Box", "Combat Toolkit", "PROXY"}
+local function findTools(player) local tools = {} local backpack = player:FindFirstChild("Backpack") local character = player.Character 
+if backpack then for _, toolName in ipairs(toolNames) do for _, tool in ipairs(backpack:GetChildren()) do if tool:IsA("Tool") and tool.Name == toolName then table.insert(tools, tool) end end end end
+if character then for _, toolName in ipairs(toolNames) do for _, tool in ipairs(character:GetChildren()) do if tool:IsA("Tool") and tool.Name == toolName then table.insert(tools, tool) end end end end return tools end
+local function startAmmoBoxEvent(player) while running do local tools = findTools(player) if #tools > 0 then for _, tool in ipairs(tools) do for i = 0, 100 do tool.BuyCharges:FireServer() end end end wait(0.4) end end
+local function startEventForAllPlayers() while running do for _, player in ipairs(Players:GetPlayers()) do if player ~= LocalPlayer then local tools = findTools(player) if #tools > 0 then startAmmoBoxEvent(player) end end end wait(0.4) end end
+local AmmoBoxTab = Window:MakeTab({ Name = "be annoying", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+AmmoBoxTab:AddToggle({ Name = "on/off", Default = false, Callback = function(value) running = value if running then startEventForAllPlayers() end 
+end
 })
+
 --- AMMO TAB 2
 local player = game:GetService("Players").LocalPlayer 
 local players = game:GetService("Players") local isChecking = false local checkLoop local function fireEvents(event, times)
