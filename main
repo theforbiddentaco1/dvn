@@ -38,7 +38,7 @@ if character then for _, toolName in ipairs(toolNames) do for _, tool in ipairs(
 local function startAmmoBoxEvent(player) while running do local tools = findTools(player) if #tools > 0 then for _, tool in ipairs(tools) do for i = 0, 100 do tool.BuyCharges:FireServer() end end end wait(0.4) end end
 local function startEventForAllPlayers() while running do for _, player in ipairs(Players:GetPlayers()) do if player ~= LocalPlayer then local tools = findTools(player) if #tools > 0 then startAmmoBoxEvent(player) end end end wait(0.4) end end
 local AmmoBoxTab = Window:MakeTab({ Name = "be annoying", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-AmmoBoxTab:AddToggle({ Name = "on/off", Default = false, Callback = function(value) running = value if running then startEventForAllPlayers() end 
+AmmoBoxTab:AddToggle({ Name = "weapons 0 box", Default = false, Callback = function(value) running = value if running then startEventForAllPlayers() end 
 end
 })
 
