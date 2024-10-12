@@ -1,4 +1,4 @@
--- v.0.8.5
+-- v.0.8.2
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -83,7 +83,6 @@ local specialistTab = Window:MakeTab({
 })
 --- AUTO KILL BOSSES
 local lp = game.Players.LocalPlayer local char = lp.Character local backpack = lp.Backpack
-local Weapon = char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade")
 local damagePerHitDefault = 101 local damagePerHitHermes = 20 local autoKillEnabled = false local connection
 local enemiesToTarget = {
     "Trident", 
@@ -99,17 +98,19 @@ local enemiesToTarget = {
     "Launcher3", 
     "Launcher4"
 }
-local function fireRemoteEvent(enemy) if Weapon then local a1 = Vector3.new(0, 0, 0) local a3 = "meow"
+local function getWeapon() return char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade") end
+local function fireRemoteEvent(enemy) local Weapon = getWeapon() if Weapon then local a1 = Vector3.new(0, 0, 0) local a3 = "meow"
 local health = enemy.Health local timesToRun if enemy.Parent.Name == "Hermes" then timesToRun = math.ceil(health / damagePerHitHermes) else
 timesToRun = math.ceil(health / damagePerHitDefault) end for i = 1, timesToRun do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end
 local function detectEnemies() connection = workspace.DescendantAdded:Connect(function(child) if autoKillEnabled then if child:IsA("Humanoid") and child.Health > 0 then
 local enemy = child.Parent for _, enemyName in pairs(enemiesToTarget) do if enemy.Name == enemyName then spawn(function() fireRemoteEvent(child) end) break end end end end
 end) for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") and enemy.Health > 0 then
 local enemyParent = enemy.Parent for _, enemyName in pairs(enemiesToTarget) do if enemyParent.Name == enemyName then fireRemoteEvent(enemy) break end end
-end end end specialistTab:AddToggle({ Name = "auto kill bosses", Default = false, Callback = function(Value) autoKillEnabled = Value
+end end end
+specialistTab:AddToggle({ Name = "auto kill bosses", Default = false, Callback = function(Value) autoKillEnabled = Value
 if Value then detectEnemies() else if connection then connection:Disconnect() connection = nil end end
 end
-})
+}) coroutine.wrap(function() while true do wait(1) getWeapon() end end)() -- Keep checking for Torqueblade
 ---
 specialistTab:AddBind({
 	Name = "hitbox",
