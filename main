@@ -96,7 +96,8 @@ local enemiesToTarget = {
     "Launcher1", 
     "Launcher2", 
     "Launcher3", 
-    "Launcher4"
+    "Launcher4",
+    "Ares"
 }
 local function getWeapon() return char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade") end
 local function fireRemoteEvent(enemy) local Weapon = getWeapon() if Weapon then local a1 = Vector3.new(0, 0, 0) local a3 = "meow"
