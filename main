@@ -1,4 +1,4 @@
--- v.0.8.2
+-- v.0.8.5
 wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
@@ -81,6 +81,36 @@ local specialistTab = Window:MakeTab({
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
+--- AUTO KILL BOSSES
+local lp = game.Players.LocalPlayer local char = lp.Character local backpack = lp.Backpack
+local Weapon = char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade")
+local damagePerHitDefault = 101 local damagePerHitHermes = 20 local autoKillEnabled = false local connection
+local enemiesToTarget = {
+    "Trident", 
+    "Tempest", 
+    "Fusilier", 
+    "Gaia", 
+    "Hermes", 
+    "Drone", 
+    "Achilles", 
+    "Sparta", 
+    "Launcher1", 
+    "Launcher2", 
+    "Launcher3", 
+    "Launcher4"
+}
+local function fireRemoteEvent(enemy) if Weapon then local a1 = Vector3.new(0, 0, 0) local a3 = "meow"
+local health = enemy.Health local timesToRun if enemy.Parent.Name == "Hermes" then timesToRun = math.ceil(health / damagePerHitHermes) else
+timesToRun = math.ceil(health / damagePerHitDefault) end for i = 1, timesToRun do Weapon.VerifyThrowHit:FireServer(a1, enemy, a3) end end end
+local function detectEnemies() connection = workspace.DescendantAdded:Connect(function(child) if autoKillEnabled then if child:IsA("Humanoid") and child.Health > 0 then
+local enemy = child.Parent for _, enemyName in pairs(enemiesToTarget) do if enemy.Name == enemyName then spawn(function() fireRemoteEvent(child) end) break end end end end
+end) for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") and enemy.Health > 0 then
+local enemyParent = enemy.Parent for _, enemyName in pairs(enemiesToTarget) do if enemyParent.Name == enemyName then fireRemoteEvent(enemy) break end end
+end end end specialistTab:AddToggle({ Name = "auto kill bosses", Default = false, Callback = function(Value) autoKillEnabled = Value
+if Value then detectEnemies() else if connection then connection:Disconnect() connection = nil end end
+end
+})
+---
 specialistTab:AddBind({
 	Name = "hitbox",
 	Default = Enum.KeyCode.V,
@@ -301,8 +331,8 @@ if name == enemyName then return true end end return false end
 if Weapon and Weapon.Name == "Harpoon Gun" then
 for _, enemy in pairs(workspace:GetDescendants()) do
 if enemy:IsA("Humanoid") then
-local enemyName = enemy.Parent.Name  -- Get the enemy's name
-if not isBlacklisted(enemyName) then -- Check if the enemy is blacklisted
+local enemyName = enemy.Parent.Name
+if not isBlacklisted(enemyName) then
 Weapon.VerifyGrapple:FireServer(enemy)
 end end end end
   	end    
@@ -372,5 +402,8 @@ Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("JetCooldown", 0.4) Weapon:SetAttribute("RefillRate", 99999)
 Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 205) end
 end })
+
+
+
 
 OrionLib:Init()
