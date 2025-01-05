@@ -1,5 +1,5 @@
--- v.0.8.2
-wait(2.3)
+-- v.1.0
+wait(12.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 -- PLAYER TAB (meow)
@@ -224,12 +224,30 @@ exploitTab:AddBind({
 	Hold = false,
 	Callback = function()
 local player = game.Players.LocalPlayer
-local character = player.Character local hrp = character:WaitForChild("HumanoidRootPart")
-local lp = game.Players.LocalPlayer.Character local Weapon = lp:FindFirstChildOfClass("Tool")
-local arg1 = Vector3.new(hrp.Position.X, hrp.Position.Y - 40, hrp.Position.Z)
-if Weapon.name == "Terminal Velocity" then
-for _, enemy in pairs(workspace:GetDescendants()) do if enemy:IsA("Humanoid") then
-Weapon.Slam:FireServer(arg1, enemy.Parent, true) Weapon.Slam:FireServer(arg1, enemy.Parent, true) end end end
+local character = player.Character
+local hrp = character:WaitForChild("HumanoidRootPart")
+local Weapon = character:FindFirstChildOfClass("Tool") or game.Players.LocalPlayer.Backpack:FindFirstChild("Terminal Velocity")
+local range = 35
+if Weapon and Weapon.Name == "Terminal Velocity" then
+for _, enemy in pairs(workspace:GetDescendants()) do
+if enemy:IsA("Humanoid") then
+local enemyParent = enemy.Parent
+local enemyParent = enemy.Parent
+    if enemyParent == player.Character or enemyParent == player.Character.Parent then continue end
+local targetPart = nil
+local partNames = { "HumanoidRootPart", "Hitbox", "GunBase1", "GunBase2", "GunBase3", "GunBase4" }
+for _, partName in ipairs(partNames) do if enemyParent:FindFirstChild(partName) then
+targetPart = enemyParent:FindFirstChild(partName) break end end
+if not targetPart and string.match(enemyParent.Name, "^Emplacement[1-4]$") then
+local emplacementIndex = string.sub(enemyParent.Name, -1)
+targetPart = enemyParent:FindFirstChild("GunBase" .. emplacementIndex) end
+if not targetPart and enemyParent.Name == "Platform" then
+targetPart = enemyParent:FindFirstChild("Platform") end
+if targetPart then local distance = (hrp.Position - targetPart.Position).Magnitude
+if distance <= range then local targetPosition = targetPart.Position
+Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+end end end end end
   	end    
 })
 ---
