@@ -1,5 +1,5 @@
--- v.1.0
-wait(12.3)
+-- v.1.1
+wait(2.3)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "why",IntroEnabled = false, HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
 -- PLAYER TAB (meow)
@@ -145,6 +145,31 @@ if descendant:IsA("ProximityPrompt") and not isInRestrictedCategory(descendant) 
 descendant.HoldDuration = 0.35 end end end setProximityPromptDuration() 
 workspace.DescendantAdded:Connect(function(descendant) if descendant:IsA("ProximityPrompt") 
 and not isInRestrictedCategory(descendant) then descendant.HoldDuration = 0.35 end end)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local validTools = { "Medical Bow", "Recurve", "Vitabow" }
+
+local function resizeButterzone(character)
+local butterzone = character:FindFirstChild("Butterzone")
+if butterzone and butterzone:IsA("BasePart") then
+task.wait(0.05) butterzone.Size = Vector3.new(9, 10.5, 9)
+butterzone.Shape = Enum.PartType.Block butterzone.Transparency = 0.95 end end
+local function checkToolAndResize(tool)
+if table.find(validTools, tool.Name) then
+for _, player in pairs(Players:GetPlayers()) do
+if player ~= LocalPlayer and player.Character then
+resizeButterzone(player.Character) end end end end
+local function monitorTools() while true do
+local character = LocalPlayer.Character if character then
+for _, tool in pairs(character:GetChildren()) do if tool:IsA("Tool") then
+tool.Equipped:Connect(function() checkToolAndResize(tool) end) end end end
+task.wait(0.1) end end local function monitorOtherPlayers()
+Players.PlayerAdded:Connect(function(player) player.CharacterAdded:Connect(function(character)
+resizeButterzone(character) end) end) for _, player in pairs(Players:GetPlayers()) do
+if player ~= LocalPlayer and player.Character then resizeButterzone(player.Character)
+end end end task.spawn(monitorTools) monitorOtherPlayers()
+
   	end
 })
 ---
