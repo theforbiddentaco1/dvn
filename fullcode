@@ -1,9 +1,8 @@
--- oops
+-- meow
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 local validWeapons = { "SMG", "Twinface","Bolter", "Harpoon Gun", "Rifle", "Vitabow", "Recurve", "Voltaic Impact","Gunslingers","Akimbo","Armour Peeler","Gift of Fire", "DMR","Stonewall", "Steelforge", "Burst Rifle", "Shotgun", "Sprinter's Streak", "Hallsweeper"}
 if table.find(validWeapons, Weapon.Name) then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("BulletSpeed", 9999) Weapon:SetAttribute("Spread", 0)
@@ -12,7 +11,6 @@ Weapon:SetAttribute("BurstCount", 10) Weapon:SetAttribute("ClipSize", 501) end
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 if Weapon.name == "Rocket Stormer" then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:SetAttribute("BulletSpeed", 6000) Weapon:SetAttribute("Spread", 0)
 Weapon:SetAttribute("BurstCount", 10) Weapon:SetAttribute("ClipSize", 501)
 Weapon:SetAttribute("Firerate", 275) end
@@ -20,7 +18,6 @@ Weapon:SetAttribute("Firerate", 275) end
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 if Weapon.name == "Medical Bow" then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("BulletSpeed", 9999) Weapon:SetAttribute("Spread", 0)
@@ -30,7 +27,6 @@ Weapon:SetAttribute("Firerate", 38) Weapon:SetAttribute("ForcefieldDuration", 50
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 if Weapon.name == "Aerorig" then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function() 
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("AccelerationPerSecond", 7) Weapon:SetAttribute("FuelInSeconds", 10000)
@@ -43,7 +39,6 @@ Weapon:SetAttribute("DamageBeforeBreak", 10000) Weapon:SetAttribute("AmmoPerBlad
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 if Weapon.name == "Terminal Velocity" then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("RefillRate", 99999) Weapon:SetAttribute("JetCooldown", 0.4)
@@ -52,7 +47,6 @@ Weapon:SetAttribute("SlamCooldown", 0) Weapon:SetAttribute("ThrustSpeed", 260) e
 local lp = game.Players.LocalPlayer.Character
 local Weapon = lp:FindFirstChildOfClass("Tool")
 if Weapon.name == "Jetpack" then
-OrionLib:MakeNotification({ Name = "weapon modified!", Content = "true", Image = "rbxassetid://4483345998", Time = 1.4 })
 Weapon:GetAttributeChangedSignal("Ammo"):Connect( function()
 Weapon:SetAttribute("Ammo", 500) end)
 Weapon:SetAttribute("JetCooldown", 0.4) Weapon:SetAttribute("RefillRate", 99999)
