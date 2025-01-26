@@ -1,0 +1,103 @@
+if not game:IsLoaded() then game.Loaded:Wait() end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local validTools = { "Medical Bow", "Recurve", "Vitabow" }
+
+local function resizeButterzone(character)
+    local butterzone = character:FindFirstChild("Butterzone")
+    if butterzone and butterzone:IsA("BasePart") then
+        task.wait(0.05)
+        butterzone.Size = Vector3.new(9, 10.5, 9)
+        butterzone.Shape = Enum.PartType.Block
+        butterzone.Transparency = 0.95
+    end
+end
+
+local function checkToolAndResize(tool)
+    if table.find(validTools, tool.Name) then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                resizeButterzone(player.Character)
+            end
+        end
+    end
+end
+
+local function monitorTools()
+    while true do
+        local character = LocalPlayer.Character
+        if character then
+            for _, tool in pairs(character:GetChildren()) do
+                if tool:IsA("Tool") then
+                    tool.Equipped:Connect(function()
+                        checkToolAndResize(tool)
+                    end)
+                end
+            end
+        end
+        task.wait(0.05)
+    end
+end
+
+local function adjustHitboxesAndHead(instance)
+    if instance:IsA("Model") and instance:FindFirstChild("Humanoid") then
+        for _, descendant in ipairs(instance:GetDescendants()) do
+            if descendant:IsA("Part") then
+                if descendant.Name == "Head" then
+                    local parent = descendant.Parent
+                    if parent == LocalPlayer.Character then
+                    elseif parent and Players:GetPlayerFromCharacter(parent) then
+                    elseif parent and parent.Name ~= "APU" then
+                        descendant.Transparency = 0.8
+                        descendant.Size = Vector3.new(4.8, 5, 4.8)
+                    elseif parent and parent.Parent and parent.Parent.Name == "APU" and parent.Name == "Pilot" then
+                        descendant.Transparency = 0.75
+                        descendant.Size = Vector3.new(5, 5, 5)
+                    end
+                end
+                if descendant.Name == "Hitbox" then
+                    if descendant.Parent and descendant.Parent.Name ~= "APU" then
+                        descendant.Size = Vector3.new(6, 7, 6)
+                        descendant.Transparency = 0.75
+                    end
+                end
+                if descendant.Name:match("^GunBase%d$") then
+                    descendant.Size = Vector3.new(10, 14, 10)
+                    descendant.Transparency = 0.5
+                end
+            end
+        end
+    end
+end
+
+workspace.ChildAdded:Connect(function(instance)
+    if instance:IsA("Model") then
+        task.wait(0.05)
+        adjustHitboxesAndHead(instance)
+    end
+end)
+
+for _, instance in ipairs(workspace:GetChildren()) do
+    if instance:IsA("Model") then
+        task.wait(0.05)
+        adjustHitboxesAndHead(instance)
+    end
+end
+
+local function monitorOtherPlayers()
+    Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
+            resizeButterzone(character)
+        end)
+    end)
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            resizeButterzone(player.Character)
+        end
+    end
+end
+
+task.spawn(monitorTools)
+monitorOtherPlayers()
