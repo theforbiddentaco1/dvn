@@ -1,0 +1,41 @@
+local lp = game.Players.LocalPlayer.Character
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool")
+local meow = math.random(1, 1000)
+
+local validWeapons = {"Shovel", "Overcharger", "Rallying Cry", "Machete", "Torqueblade"}
+
+local function isValidWeapon(name)
+    for _, v in ipairs(validWeapons) do
+        if name == v then
+            return true
+        end
+    end
+    return false
+end
+
+local function hasValidPart(parent)
+    return parent:FindFirstChild("HumanoidRootPart") or 
+           parent:FindFirstChild("Base") or 
+           parent:FindFirstChild("Hitbox") or 
+           parent:FindFirstChild("Handle")
+end
+
+if not Weapon or not isValidWeapon(Weapon.Name) then
+    return
+end
+
+for _, enemy in pairs(workspace:GetDescendants()) do
+    if enemy:IsA("Humanoid") and enemy.Parent ~= lp and hasValidPart(enemy.Parent) then
+        local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
+                              enemy.Parent:FindFirstChild("Base") or 
+                              enemy.Parent:FindFirstChild("Hitbox") or 
+                              enemy.Parent:FindFirstChild("Handle")
+        if enemyPosition then
+            local distance = (playerPosition - enemyPosition.Position).magnitude
+            if distance <= globalDistLim then
+                Weapon.VerifyHit:FireServer(enemy, meow)
+            end
+        end
+    end
+end
