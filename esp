@@ -1,0 +1,29 @@
+local Sense = loadstring(game:HttpGet('https://sirius.menu/sense'))()
+local function addESPToModel(model)
+    local head = model:FindFirstChild("Head")
+    if head then
+        local object = Sense.AddInstance(head, {
+            enabled = true,
+            text = model.Name .. " – {distance}",
+            textColor = { Color3.fromRGB(160, 1, 1), 5 },
+            textOutline = true,
+            textOutlineColor = Color3.fromRGB(225, 225, 225),
+            textSize = 9.5,
+            textFont = 1,
+            limitDistance = false,
+            maxDistance = 150
+        })
+        object.options.enabled = true
+    end
+end
+for _, obj in pairs(workspace:GetDescendants()) do
+    if obj:IsA("Model") and (obj.Name == "Jetpacker" or obj.Name == "Sniper" or obj.Name == "Gunner") then
+        addESPToModel(obj)
+    end
+end
+workspace.DescendantAdded:Connect(function(obj)
+    if obj:IsA("Model") and (obj.Name == "Jetpacker" or obj.Name == "Sniper" or obj.Name == "Gunner") then
+        addESPToModel(obj)
+    end
+end)
+Sense.Load()
