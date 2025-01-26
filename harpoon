@@ -1,0 +1,28 @@
+local lp = game.Players.LocalPlayer.Character
+local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+local Weapon = lp:FindFirstChildOfClass("Tool")
+local meow = math.random(1, 1000)
+
+local blacklist = {"Shielder", "Cloaker"}
+
+local function isBlacklisted(enemyName)
+    for _, name in ipairs(blacklist) do
+        if name == enemyName then
+            return true
+        end
+    end
+    return false
+end
+
+if not Weapon or Weapon.Name ~= "Harpoon Gun" then
+    return
+end
+
+for _, enemy in pairs(workspace:GetDescendants()) do
+    if enemy:IsA("Humanoid") then
+        local enemyName = enemy.Parent.Name
+        if not isBlacklisted(enemyName) then
+            Weapon.VerifyGrapple:FireServer(enemy)
+        end
+    end
+end
