@@ -1,0 +1,46 @@
+local player = game.Players.LocalPlayer
+local character = player.Character
+local hrp = character:WaitForChild("HumanoidRootPart")
+local Weapon = character:FindFirstChildOfClass("Tool") or player.Backpack:FindFirstChild("Terminal Velocity")
+local range = 35
+
+if not Weapon or Weapon.Name ~= "Terminal Velocity" then
+    return
+end
+
+for _, enemy in pairs(workspace:GetDescendants()) do
+    if enemy:IsA("Humanoid") then
+        local enemyParent = enemy.Parent
+
+        if enemyParent:FindFirstChildOfClass("Humanoid") and game.Players:GetPlayerFromCharacter(enemyParent) then
+        else
+            local targetPart = nil
+            local partNames = { "HumanoidRootPart", "Hitbox", "GunBase1", "GunBase2", "GunBase3", "GunBase4", "Base", "Head" }
+
+            for _, partName in ipairs(partNames) do
+                if enemyParent:FindFirstChild(partName) then
+                    targetPart = enemyParent:FindFirstChild(partName)
+                    break
+                end
+            end
+
+            if not targetPart and string.match(enemyParent.Name, "^Emplacement[1-4]$") then
+                local emplacementIndex = string.sub(enemyParent.Name, -1)
+                targetPart = enemyParent:FindFirstChild("GunBase" .. emplacementIndex)
+            end
+
+            if not targetPart and enemyParent.Name == "Platform" then
+                targetPart = enemyParent:FindFirstChild("Platform")
+            end
+
+            if targetPart then
+                local distance = (hrp.Position - targetPart.Position).Magnitude
+                if distance <= range then
+                    local targetPosition = targetPart.Position
+                    Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+                    Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+                end
+            end
+        end
+    end
+end
