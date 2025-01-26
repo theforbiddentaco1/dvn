@@ -1,2 +1,751 @@
--- meow
-github is so fucking stupid
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+Name = "bawak disapproval v2",
+Icon = 0,
+    LoadingTitle = "dvn mods",
+    LoadingSubtitle = "by wqntedsouls",
+    Theme = "AmberGlow",
+
+    DisableRayfieldPrompts = false,
+    DisableBuildWarnings = false,
+
+    ConfigurationSaving = { Enabled = true, FolderName = nil, FileName = "DVN CONFIGS" },
+
+    Discord = { Enabled = false, Invite = "noinvitelink", RememberJoins = true },
+
+    KeySystem = true,
+    KeySettings = { Title = "key sir", Subtitle = "the key system", Note = "key is owner's username",
+    FileName = "rayfieldkeyDVN", SaveKey = true, GrabKeyFromSite = false, Key = {"wqntedsouls"} }
+})
+
+
+local aoeTab = Window:CreateTab("AOE", "atom")
+local toggleTab = Window:CreateTab("Toggles", "toggle-left")
+local weaponTab = Window:CreateTab("Weapons+", "crosshair")
+local healingTab = Window:CreateTab("Healing", "heart-pulse")
+
+
+local gunmods = weaponTab:CreateKeybind({
+   Name = "Gun Modification",
+   CurrentKeybind = "P",
+   HoldToInteract = false,
+   Flag = "pFlag",
+   Callback = function(gunmods)
+    local lp = game.Players.LocalPlayer.Character
+    if not lp then return end -- Exit if the character is not loaded
+    
+    local Weapon = lp:FindFirstChildOfClass("Tool")
+    if not Weapon then return end -- Exit if no weapon is found
+    
+    local validWeapons = { 
+        "SMG", "Twinface", "Bolter", "Harpoon Gun", "Rifle", "Vitabow", "Recurve", 
+        "Voltaic Impact", "Gunslingers", "Akimbo", "Armour Peeler", "Gift of Fire", 
+        "DMR", "Stonewall", "Steelforge", "Burst Rifle", "Shotgun", "Sprinter's Streak", 
+        "Hallsweeper"
+    }
+    
+    if table.find(validWeapons, Weapon.Name) then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("BulletSpeed", 9999)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 10)
+        Weapon:SetAttribute("ClipSize", 501)
+    end
+    
+    -- SPECIAL: Rocket Stormer
+    if Weapon.Name == "Rocket Stormer" then
+        Weapon:SetAttribute("BulletSpeed", 6000)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 10)
+        Weapon:SetAttribute("ClipSize", 501)
+        Weapon:SetAttribute("Firerate", 275)
+    end
+    
+    -- SPECIAL: Medical Bow
+    if Weapon.Name == "Medical Bow" then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("BulletSpeed", 9999)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 10)
+        Weapon:SetAttribute("ClipSize", 501)
+        Weapon:SetAttribute("Firerate", 38)
+        Weapon:SetAttribute("ForcefieldDuration", 50)
+    end
+    
+    -- SPECIAL: Vitabow
+    if Weapon.Name == "Vitabow" then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("BulletSpeed", 9999)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 10)
+        Weapon:SetAttribute("ClipSize", 501)
+        Weapon:SetAttribute("Firerate", 38)
+        Weapon:SetAttribute("ForcefieldDuration", 50)
+    end
+    
+    -- SPECIAL: Aerorig
+    if Weapon.Name == "Aerorig" then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function() 
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("AccelerationPerSecond", 7)
+        Weapon:SetAttribute("FuelInSeconds", 10000)
+        Weapon:SetAttribute("GrappleMaxDistance", 100000)
+        Weapon:SetAttribute("GrappleProjectileSpeed", 10000)
+        Weapon:SetAttribute("GravityMultiplier", 10)
+        Weapon:SetAttribute("PlayerControlAcceleration", 6.5)
+        Weapon:SetAttribute("SnapoffDistance", 2)
+        Weapon:SetAttribute("VelocityLimit", 190)
+        Weapon:SetAttribute("MaximumDamage", 6000)
+        Weapon:SetAttribute("HealthOnKill", 100)
+        Weapon:SetAttribute("DamageBeforeBreak", 10000)
+        Weapon:SetAttribute("AmmoPerBlade", 0.1)
+    end
+    
+    -- SPECIAL: Terminal Velocity
+    if Weapon.Name == "Terminal Velocity" then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("RefillRate", 99999)
+        Weapon:SetAttribute("JetCooldown", 0.4)
+        Weapon:SetAttribute("SlamCooldown", 0)
+        Weapon:SetAttribute("ThrustSpeed", 260)
+    end
+    
+    -- SPECIAL: Jetpack
+    if Weapon.Name == "Jetpack" then
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("JetCooldown", 0.4)
+        Weapon:SetAttribute("RefillRate", 99999)
+        Weapon:SetAttribute("SlamCooldown", 0)
+        Weapon:SetAttribute("ThrustSpeed", 205)
+    end
+        Rayfield:Notify({ Title = "it tried", Content = "modified?", Duration = 2, Image = "bell-ring", })
+   end,
+})
+
+local aoeSlider = aoeTab:CreateSlider({
+   Name = "Distance for Melee AOE",
+   Range = {0, 150},
+   Increment = 10,
+   Suffix = "studs",
+   CurrentValue = 10,
+   Flag = "sliderFlag0",
+   Callback = function(dVal)
+    globalDistLim = dVal
+   end,
+})
+
+local meleeAOE = aoeTab:CreateKeybind({
+   Name = "Melee AOE",
+   CurrentKeybind = "M",
+   HoldToInteract = false,
+   Flag = "mFlag1",
+   Callback = function(meleeAOE)
+    local lp = game.Players.LocalPlayer.Character local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+    local Weapon = lp:FindFirstChildOfClass("Tool") local meow = math.random(1, 1000)
+    local validWeapons = {"Shovel", "Overcharger", "Rallying Cry", "Machete", "Torqueblade"}
+    local function isValidWeapon(name) for _, v in ipairs(validWeapons) do if name == v then
+    return true end end return false end local function hasValidPart(parent) return parent:FindFirstChild("HumanoidRootPart") or 
+    parent:FindFirstChild("Base") or parent:FindFirstChild("Hitbox") or parent:FindFirstChild("Handle")
+    end if not Weapon or not isValidWeapon(Weapon.Name) then return end
+    for _, enemy in pairs(workspace:GetDescendants()) do
+    if enemy:IsA("Humanoid") and enemy.Parent ~= lp and hasValidPart(enemy.Parent) then
+    local enemyPosition = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
+    enemy.Parent:FindFirstChild("Base") or enemy.Parent:FindFirstChild("Hitbox") or 
+    enemy.Parent:FindFirstChild("Handle") or enemy.Parent:FindFirstChild("Head") if enemyPosition then
+    local distance = (playerPosition - enemyPosition.Position).magnitude if distance <= globalDistLim then
+    for i = 0, 2 do Weapon.VerifyHit:FireServer(enemy, meow) end end end end end
+   end,
+})
+
+local harpoon = aoeTab:CreateKeybind({
+   Name = "Harpoon All",
+   CurrentKeybind = "M",
+   HoldToInteract = false,
+   Flag = "mFlag0",
+   Callback = function(harpoon)
+    local lp = game.Players.LocalPlayer.Character
+    local playerPosition = lp:WaitForChild("HumanoidRootPart").Position
+    local Weapon = lp:FindFirstChildOfClass("Tool")
+    local meow = math.random(1, 1000)
+    
+    local blacklist = {"Shielder", "Cloaker"}
+    
+    local function isBlacklisted(enemyName)
+        for _, name in ipairs(blacklist) do
+            if name == enemyName then
+                return true
+            end
+        end
+        return false
+    end
+    
+    if not Weapon or Weapon.Name ~= "Harpoon Gun" then
+        return
+    end
+    
+    for _, enemy in pairs(workspace:GetDescendants()) do
+        if enemy:IsA("Humanoid") then
+            local enemyName = enemy.Parent.Name
+            if not isBlacklisted(enemyName) then
+                Weapon.VerifyGrapple:FireServer(enemy)
+            end
+        end
+    end
+   end,
+})
+
+local nontorqueAOE = aoeTab:CreateKeybind({
+   Name = "Non-Torque AOE",
+   CurrentKeybind = "H",
+   HoldToInteract = false,
+   Flag = "hFlag0",
+   Callback = function(nontorqueAOE)
+    local lp = game.Players.LocalPlayer
+    local mouse = lp:GetMouse()
+    local range = 33
+    local validWeapons = { "Shovel", "Overcharger", "Rallying Cry", "Machete" }
+    
+    local function findWeaponInCharacter(char)
+        for _, toolName in pairs(validWeapons) do
+            local tool = char:FindFirstChild(toolName)
+            if tool then
+                return tool
+            end
+        end
+        return nil
+    end
+    
+    local char = lp.Character
+    local Weapon = char and findWeaponInCharacter(char)
+    
+    if not Weapon then
+        return
+    end
+    
+    for _, player in pairs(game.Players:GetPlayers()) do
+        local char = player.Character
+        local enemyWeapon = char and findWeaponInCharacter(char)
+        if enemyWeapon then
+            local a2 = math.random(1, 10000)
+            for _, enemy in pairs(workspace:GetDescendants()) do
+                if enemy:IsA("Humanoid") and enemy.Parent then
+                    local enemyHRP = enemy.Parent:FindFirstChild("HumanoidRootPart") 
+                        or enemy.Parent:FindFirstChild("Handle") 
+                        or enemy.Parent:FindFirstChild("Hitbox") 
+                        or enemy.Parent:FindFirstChild("Head") 
+                        or enemy.Parent:FindFirstChild("Base")
+                    
+                    local enemyPlayer = game.Players:GetPlayerFromCharacter(enemy.Parent)
+                    if not enemyPlayer and enemyHRP then
+                        local mousePos = mouse.Hit.p
+                        local distance = (enemyHRP.Position - mousePos).Magnitude
+                        if distance <= range then
+                            for i = 0, 4 do
+                                Weapon.VerifyHit:FireServer(enemy, a2)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+   end,
+})
+
+local torqueAOE = aoeTab:CreateKeybind({
+   Name = "Torque AOE",
+   CurrentKeybind = "H",
+   HoldToInteract = false,
+   Flag = "hFlag1",
+   Callback = function(torqueAOE)
+    local lp = game.Players.LocalPlayer
+    local char = lp.Character
+    local backpack = lp.Backpack
+    local Weapon = char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade")
+    local damagePerHit = 101
+    
+    if not Weapon then
+        return
+    end
+    
+    local a1 = Vector3.new(0, 0, 0)
+    local a3 = "meow"
+    local mouse = lp:GetMouse()
+    
+    for _, enemy in pairs(workspace:GetDescendants()) do
+        if enemy:IsA("Humanoid") and enemy.Health > 0 then
+            local isPlayer = false
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player.Character and player.Character:FindFirstChild("Humanoid") == enemy then
+                    isPlayer = true
+                    break
+                end
+            end
+            if not isPlayer then
+                local enemyHRP = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
+                                 enemy.Parent:FindFirstChild("Handle") or 
+                                 enemy.Parent:FindFirstChild("Hitbox") or 
+                                 enemy.Parent:FindFirstChild("Head") or 
+                                 enemy.Parent:FindFirstChild("Base")
+                if enemyHRP then
+                    spawn(function()
+                        local health = enemy.Health
+                        local timesToRun = math.floor(health / damagePerHit)
+                        if health % damagePerHit > 0 then
+                            timesToRun = timesToRun + 1
+                        end
+                        for i = 1, timesToRun do
+                            Weapon.VerifyThrowHit:FireServer(a1, enemy, a3)
+                        end
+                    end)
+                end
+            end
+        end
+    end
+   end,
+})
+
+local terminalAOE = aoeTab:CreateKeybind({
+   Name = "Terminal AOE",
+   CurrentKeybind = "M",
+   HoldToInteract = false,
+   Flag = "mFlag2",
+   Callback = function(terminalAOE)
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local Weapon = character:FindFirstChildOfClass("Tool") or player.Backpack:FindFirstChild("Terminal Velocity")
+    local range = 35
+    
+    if not Weapon or Weapon.Name ~= "Terminal Velocity" then
+        return
+    end
+    
+    for _, enemy in pairs(workspace:GetDescendants()) do
+        if enemy:IsA("Humanoid") then
+            local enemyParent = enemy.Parent
+    
+            if enemyParent:FindFirstChildOfClass("Humanoid") and game.Players:GetPlayerFromCharacter(enemyParent) then
+            else
+                local targetPart = nil
+                local partNames = { "HumanoidRootPart", "Hitbox", "GunBase1", "GunBase2", "GunBase3", "GunBase4", "Base", "Head" }
+    
+                for _, partName in ipairs(partNames) do
+                    if enemyParent:FindFirstChild(partName) then
+                        targetPart = enemyParent:FindFirstChild(partName)
+                        break
+                    end
+                end
+    
+                if not targetPart and string.match(enemyParent.Name, "^Emplacement[1-4]$") then
+                    local emplacementIndex = string.sub(enemyParent.Name, -1)
+                    targetPart = enemyParent:FindFirstChild("GunBase" .. emplacementIndex)
+                end
+    
+                if not targetPart and enemyParent.Name == "Platform" then
+                    targetPart = enemyParent:FindFirstChild("Platform")
+                end
+    
+                if targetPart then
+                    local distance = (hrp.Position - targetPart.Position).Magnitude
+                    if distance <= range then
+                        local targetPosition = targetPart.Position
+                        Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+                        Weapon.Slam:FireServer(targetPosition, enemyParent, true)
+                    end
+                end
+            end
+        end
+    end
+   end,
+})
+
+local lp = game.Players.LocalPlayer
+local char = lp.Character
+local backpack = lp.Backpack
+local damagePerHitDefault = 101
+local damagePerHitHermes = 20
+local autoKillEnabled = false
+local enemiesToTarget = {
+    "Trident", 
+    "Tempest", 
+    "Fusilier", 
+    "Gaia", 
+    "Hermes", 
+    "Drone", 
+    "Achilles", 
+    "Sparta", 
+    "Launcher1", 
+    "Launcher2", 
+    "Launcher3", 
+    "Launcher4",
+    "Ares"
+}
+local function getWeapon()
+    return char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade")
+end
+local function fireRemoteEvent(enemy)
+    local Weapon = getWeapon()
+    if Weapon then
+        local a1 = Vector3.new(0, 0, 0)
+        local a3 = "meow"
+        local health = enemy.Health
+        local timesToRun
+        if enemy.Parent.Name == "Hermes" then
+            timesToRun = math.ceil(health / damagePerHitHermes)
+        else
+            timesToRun = math.ceil(health / damagePerHitDefault)
+        end
+        for i = 1, timesToRun do
+            Weapon.VerifyThrowHit:FireServer(a1, enemy, a3)
+        end
+    end
+end
+local function detectEnemies()
+    local targetFound = false
+    for _, enemy in pairs(workspace:GetDescendants()) do
+        if enemy:IsA("Humanoid") and enemy.Health > 0 then
+            local enemyParent = enemy.Parent
+            for _, enemyName in pairs(enemiesToTarget) do
+                if enemyParent.Name == enemyName then
+                    fireRemoteEvent(enemy)
+                    targetFound = true
+                    break
+                end
+            end
+        end
+    end
+    if not targetFound then
+    end
+end
+local autoKillToggle = toggleTab:CreateToggle({
+    Name = "Auto-kill Bosses",
+    CurrentValue = false,
+    Flag = "autoKillFlag0",
+    Callback = function(Value)
+        autoKillEnabled = Value
+        if autoKillEnabled then
+            while autoKillEnabled do
+                detectEnemies()
+                wait(0.0005)
+            end
+        end
+    end,
+})
+
+local toggleEnabled = false
+        local function placeItems()
+        local Players = game:GetService("Players")
+        local workspaceMap = workspace:FindFirstChild("Map")
+        if not workspaceMap then return end
+        local bombPlacements = workspaceMap:FindFirstChild("BombPlacements")
+        if bombPlacements then
+        for _, placement in ipairs(bombPlacements:GetChildren()) do
+            if placement:IsA("BasePart") then
+                for _, player in ipairs(Players:GetPlayers()) do
+                    local backpack = player:FindFirstChild("Backpack")
+                    local character = player.Character
+                    local bombCharge = backpack and backpack:FindFirstChild("BombCharge") or (character and character:FindFirstChild("BombCharge"))
+                    if bombCharge then
+                        bombCharge.Place:FireServer(placement)
+                    end
+                end
+                for _, npc in ipairs(workspace:GetChildren()) do
+                    if npc:IsA("Model") and npc:FindFirstChild("Humanoid") then
+                        local bombChargeInNPC = npc:FindFirstChild("BombCharge")
+                        if bombChargeInNPC then
+                            bombChargeInNPC.Place:FireServer(placement)
+                        end
+                    end
+                end
+            end
+        end
+        end
+        local keycardSlots = {}
+        local function getNextKeycardSlot()
+        local teleporterRoom = workspaceMap:FindFirstChild("TeleporterRoom")
+        if not teleporterRoom then return nil end
+
+        for _, slot in ipairs(teleporterRoom:GetChildren()) do
+            if slot.Name == "KeycardSlot" and not table.find(keycardSlots, slot) then
+                table.insert(keycardSlots, slot)
+                return slot
+            end
+        end
+        return nil
+        end
+
+        for _, player in ipairs(Players:GetPlayers()) do
+        local backpack = player:FindFirstChild("Backpack")
+        local character = player.Character
+        local keycard = backpack and backpack:FindFirstChild("Keycard") or (character and character:FindFirstChild("Keycard"))
+        if keycard then
+            local slot = getNextKeycardSlot()
+            if slot then
+                keycard.Place:FireServer(slot)
+            end
+        end
+        end
+
+        local previewPlacements = workspaceMap:FindFirstChild("PreviewPlacements")
+        if previewPlacements then
+        local bagPlacementPreview = previewPlacements:FindFirstChild("BagPlacementPreview")
+        if bagPlacementPreview then
+            for _, player in ipairs(Players:GetPlayers()) do
+                local backpack = player:FindFirstChild("Backpack")
+                local character = player.Character
+
+                local explosiveBag = backpack and backpack:FindFirstChild("ExplosiveBag") or (character and character:FindFirstChild("ExplosiveBag"))
+                if explosiveBag then
+                    explosiveBag.Place:FireServer(bagPlacementPreview)
+                end
+            end
+        end
+    end
+end
+local epilogueToggles = toggleTab:CreateToggle({
+    Name = "Epilogue Objectives",
+    CurrentValue = false,
+    Flag = "epilogue0",
+    Callback = function(value)
+        toggleEnabled = value
+        if toggleEnabled then
+            while toggleEnabled do
+                placeItems()
+                task.wait(0.05)
+            end
+        end
+    end,
+})
+
+local Sense = loadstring(game:HttpGet('https://sirius.menu/sense'))()
+local espRunning = false
+local espLoop
+local function addESPToModel(model)
+    local head = model:FindFirstChild("Head")
+    if head then
+        local object = Sense.AddInstance(head, {
+            enabled = true,
+            text = model.Name .. " – {distance}",
+            textColor = { Color3.fromRGB(160, 1, 1), 5 },
+            textOutline = true,
+            textOutlineColor = Color3.fromRGB(225, 225, 225),
+            textSize = 9.5,
+            textFont = 1,
+            limitDistance = false,
+            maxDistance = 150
+        })
+        object.options.enabled = true
+    end
+end
+local espToggle = toggleTab:CreateToggle({
+    Name = "High-Priority ESP",
+    CurrentValue = true,
+    Flag = "espFlag0",
+    Callback = function(espToggle1)
+        if espToggle1 then
+            if not espRunning then
+                espRunning = true
+                espLoop = task.spawn(function()
+                    while espRunning do
+                        for _, obj in pairs(workspace:GetDescendants()) do
+                            if obj:IsA("Model") and (obj.Name == "Jetpacker" or obj.Name == "Sniper" or obj.Name == "Gunner") then
+                                addESPToModel(obj)
+                            end
+                        end
+                        task.wait(0.4)
+                    end
+                end)
+            end
+        else
+            espRunning = false
+            if espLoop then
+                task.cancel(espLoop)
+                espLoop = nil
+            end
+            Sense.Unload()
+        end
+    end,
+})
+Sense.Load()
+
+
+local hitboxButton = toggleTab:CreateButton({
+   Name = "Hitboxes",
+   Callback = function()
+    if not game:IsLoaded() then game.Loaded:Wait() end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local validTools = { "Medical Bow", "Recurve", "Vitabow" }
+
+local function resizeButterzone(character)
+    local butterzone = character:FindFirstChild("Butterzone")
+    if butterzone and butterzone:IsA("BasePart") then
+        task.wait(0.05)
+        butterzone.Size = Vector3.new(9, 10.5, 9)
+        butterzone.Shape = Enum.PartType.Block
+        butterzone.Transparency = 0.95
+    end
+end
+
+local function checkToolAndResize(tool)
+    if table.find(validTools, tool.Name) then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                resizeButterzone(player.Character)
+            end
+        end
+    end
+end
+
+local function monitorTools()
+    while true do
+        local character = LocalPlayer.Character
+        if character then
+            for _, tool in pairs(character:GetChildren()) do
+                if tool:IsA("Tool") then
+                    tool.Equipped:Connect(function()
+                        checkToolAndResize(tool)
+                    end)
+                end
+            end
+        end
+        task.wait(0.05)
+    end
+end
+
+local function adjustHitboxesAndHead(instance)
+    if instance:IsA("Model") and instance:FindFirstChild("Humanoid") then
+        for _, descendant in ipairs(instance:GetDescendants()) do
+            if descendant:IsA("Part") then
+                if descendant.Name == "Head" then
+                    local parent = descendant.Parent
+                    if parent == LocalPlayer.Character then
+                    elseif parent and Players:GetPlayerFromCharacter(parent) then
+                    elseif parent and parent.Name ~= "APU" then
+                        descendant.Transparency = 0.8
+                        descendant.Size = Vector3.new(4.8, 5, 4.8)
+                    elseif parent and parent.Parent and parent.Parent.Name == "APU" and parent.Name == "Pilot" then
+                        descendant.Transparency = 0.75
+                        descendant.Size = Vector3.new(5, 5, 5)
+                    end
+                end
+                if descendant.Name == "Hitbox" then
+                    if descendant.Parent and descendant.Parent.Name ~= "APU" then
+                        descendant.Size = Vector3.new(6, 7, 6)
+                        descendant.Transparency = 0.75
+                    end
+                end
+                if descendant.Name:match("^GunBase%d$") then
+                    descendant.Size = Vector3.new(10, 14, 10)
+                    descendant.Transparency = 0.5
+                end
+            end
+        end
+    end
+end
+
+workspace.ChildAdded:Connect(function(instance)
+    if instance:IsA("Model") then
+        task.wait(0.05)
+        adjustHitboxesAndHead(instance)
+    end
+end)
+
+for _, instance in ipairs(workspace:GetChildren()) do
+    if instance:IsA("Model") then
+        task.wait(0.05)
+        adjustHitboxesAndHead(instance)
+    end
+end
+
+local function monitorOtherPlayers()
+    Players.PlayerAdded:Connect(function(player)
+        player.CharacterAdded:Connect(function(character)
+            resizeButterzone(character)
+        end)
+    end)
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            resizeButterzone(player.Character)
+        end
+    end
+end
+
+task.spawn(monitorTools)
+monitorOtherPlayers()
+    Rayfield:Notify({ Title = "hitboxes changed", Content = "don't re click unless something idk", Duration = 3, Image = "scan", })
+   end,
+})
+
+local mercyToggle2 = healingTab:CreateToggle({
+    Name = "Use on ALL Players",
+    CurrentValue = false,
+    Flag = "mercyKillToggle11",
+    Callback = function(allToggle)
+    end,
+})
+
+local mercyKill0 = healingTab:CreateKeybind({
+    Name = "Mercy Kill Effect",
+    CurrentKeybind = "N",
+    HoldToInteract = false,
+    Flag = "mercyKillFlag01",
+    Callback = function()
+        if mercyToggle2.CurrentValue then
+            local toolsFound = false
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                local mercyKill = player.Character and player.Character:FindFirstChild("Mercy Kill") 
+                    or player.Backpack:FindFirstChild("Mercy Kill")
+                
+                if mercyKill and mercyKill:FindFirstChild("VerifyHit") then
+                    toolsFound = true
+                    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        local args = {
+                            [1] = 200,
+                            [2] = Vector3.new(hrp.Position.X, hrp.Position.Y, hrp.Position.Z)
+                        }
+                        mercyKill.VerifyHit:FireServer(unpack(args))
+                    end
+                end
+            end
+            if not toolsFound then
+Rayfield:Notify({ Title = "oh no...", Content = "nothing found :(", Duration = 5, Image = "badge-alert", })
+            end
+        else
+            local player = game.Players.LocalPlayer
+            local mercyKill = player.Character and player.Character:FindFirstChild("Mercy Kill") 
+                or player.Backpack:FindFirstChild("Mercy Kill")
+            
+            if mercyKill and mercyKill:FindFirstChild("VerifyHit") then
+                local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local args = {
+                        [1] = 200,
+                        [2] = Vector3.new(hrp.Position.X, hrp.Position.Y, hrp.Position.Z)
+                    }
+                    mercyKill.VerifyHit:FireServer(unpack(args))
+                end
+            else
+Rayfield:Notify({ Title = "oh no...", Content = "nothing found :(", Duration = 5, Image = "badge-alert", })
+            end
+        end
+    end,
+})
+
+
+Rayfield:LoadConfiguration()
