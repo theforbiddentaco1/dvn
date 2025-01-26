@@ -129,7 +129,7 @@ local gunmods = weaponTab:CreateKeybind({
         Weapon:SetAttribute("SlamCooldown", 0)
         Weapon:SetAttribute("ThrustSpeed", 205)
     end
-        Rayfield:Notify({ Title = "it tried", Content = "modified?", Duration = 2, Image = "bell-ring", })
+        Rayfield:Notify({ Title = "it tried", Content = "modified?", Duration = 5, Image = "bell-ring", })
    end,
 })
 
@@ -687,7 +687,7 @@ end
 
 task.spawn(monitorTools)
 monitorOtherPlayers()
-    Rayfield:Notify({ Title = "hitboxes changed", Content = "don't re click unless something idk", Duration = 3, Image = "scan", })
+    Rayfield:Notify({ Title = "hitboxes changed", Content = "don't re click unless something idk", Duration = 5, Image = "scan", })
    end,
 })
 
