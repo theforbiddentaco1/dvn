@@ -43,6 +43,19 @@ if Weapon.Name == "Medical Bow" then
     Weapon:SetAttribute("ForcefieldDuration", 50)
 end
 
+-- SPECIAL: Vitabow
+if Weapon.Name == "Vitabow" then
+    Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+        Weapon:SetAttribute("Ammo", 500)
+    end)
+    Weapon:SetAttribute("BulletSpeed", 9999)
+    Weapon:SetAttribute("Spread", 0)
+    Weapon:SetAttribute("BurstCount", 10)
+    Weapon:SetAttribute("ClipSize", 501)
+    Weapon:SetAttribute("Firerate", 38)
+    Weapon:SetAttribute("ForcefieldDuration", 50)
+end
+
 -- SPECIAL: Aerorig
 if Weapon.Name == "Aerorig" then
     Weapon:GetAttributeChangedSignal("Ammo"):Connect(function() 
