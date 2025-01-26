@@ -1,0 +1,44 @@
+local lp = game.Players.LocalPlayer
+local char = lp.Character
+local backpack = lp.Backpack
+local Weapon = char:FindFirstChild("Torqueblade") or backpack:FindFirstChild("Torqueblade")
+local damagePerHit = 101
+
+if not Weapon then
+    return
+end
+
+local a1 = Vector3.new(0, 0, 0)
+local a3 = "meow"
+local mouse = lp:GetMouse()
+
+for _, enemy in pairs(workspace:GetDescendants()) do
+    if enemy:IsA("Humanoid") and enemy.Health > 0 then
+        local isPlayer = false
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Humanoid") == enemy then
+                isPlayer = true
+                break
+            end
+        end
+        if not isPlayer then
+            local enemyHRP = enemy.Parent:FindFirstChild("HumanoidRootPart") or 
+                             enemy.Parent:FindFirstChild("Handle") or 
+                             enemy.Parent:FindFirstChild("Hitbox") or 
+                             enemy.Parent:FindFirstChild("Head") or 
+                             enemy.Parent:FindFirstChild("Base")
+            if enemyHRP then
+                spawn(function()
+                    local health = enemy.Health
+                    local timesToRun = math.floor(health / damagePerHit)
+                    if health % damagePerHit > 0 then
+                        timesToRun = timesToRun + 1
+                    end
+                    for i = 1, timesToRun do
+                        Weapon.VerifyThrowHit:FireServer(a1, enemy, a3)
+                    end
+                end)
+            end
+        end
+    end
+end
