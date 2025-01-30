@@ -32,15 +32,15 @@ local gunmods = weaponTab:CreateKeybind({
    Flag = "pFlag",
    Callback = function(gunmods)
     local lp = game.Players.LocalPlayer.Character
-    if not lp then return end -- Exit if the character is not loaded
+    if not lp then return end
     
     local Weapon = lp:FindFirstChildOfClass("Tool")
-    if not Weapon then return end -- Exit if no weapon is found
+    if not Weapon then return end
     
     local validWeapons = { 
         "SMG", "Twinface", "Bolter", "Harpoon Gun", "Rifle", "Vitabow", "Recurve", 
         "Voltaic Impact", "Gunslingers", "Akimbo", "Armour Peeler", "Gift of Fire", 
-        "DMR", "Stonewall", "Steelforge", "Burst Rifle", "Shotgun", "Sprinter's Streak", 
+        "DMR", "Steelforge", "Shotgun", "Sprinter's Streak", 
         "Hallsweeper"
     }
     
@@ -129,6 +129,32 @@ local gunmods = weaponTab:CreateKeybind({
         Weapon:SetAttribute("SlamCooldown", 0)
         Weapon:SetAttribute("ThrustSpeed", 205)
     end
+    
+        -- SPECIAL: Burst Rifle
+    if Weapon.Name == "Burst Rifle" then
+        Weapon:SetAttribute("BulletSpeed", 12500)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 4)
+        Weapon:SetAttribute("BurstFirerate", 175)
+        Weapon:SetAttribute("ClipSize", 501)
+        Weapon:SetAttribute("Firerate", math.huge)
+    end
+    
+        -- SPECIAL: Stonewall
+    if Weapon.Name == "Stonewall" then
+        Weapon:SetAttribute("BulletSpeed", 12500)
+        Weapon:SetAttribute("Spread", 0)
+        Weapon:SetAttribute("BurstCount", 5)
+        Weapon:SetAttribute("BurstFirerate", 175)
+        Weapon:SetAttribute("ClipSize", 501)
+        Weapon:SetAttribute("Firerate", math.huge)
+        Weapon:SetAttribute("FullAccuracy", 0)
+        Weapon:SetAttribute("FullBurstCooldown", 0)
+        Weapon:SetAttribute("HealthOnHit", 5)
+    end
+    
+    
+    
         Rayfield:Notify({ Title = "it tried", Content = "modified?", Duration = 5, Image = "bell-ring", })
    end,
 })
@@ -528,58 +554,6 @@ local epilogueToggles = toggleTab:CreateToggle({
         end
     end,
 })
-
-local Sense = loadstring(game:HttpGet('https://sirius.menu/sense'))()
-local espRunning = false
-local espLoop
-local function addESPToModel(model)
-    local head = model:FindFirstChild("Head")
-    if head then
-        local object = Sense.AddInstance(head, {
-            enabled = true,
-            text = model.Name .. " – {distance}",
-            textColor = { Color3.fromRGB(160, 1, 1), 5 },
-            textOutline = true,
-            textOutlineColor = Color3.fromRGB(225, 225, 225),
-            textSize = 9.5,
-            textFont = 1,
-            limitDistance = false,
-            maxDistance = 150
-        })
-        object.options.enabled = true
-    end
-end
-local espToggle = toggleTab:CreateToggle({
-    Name = "High-Priority ESP",
-    CurrentValue = true,
-    Flag = "espFlag0",
-    Callback = function(espToggle1)
-        if espToggle1 then
-            if not espRunning then
-                espRunning = true
-                espLoop = task.spawn(function()
-                    while espRunning do
-                        for _, obj in pairs(workspace:GetDescendants()) do
-                            if obj:IsA("Model") and (obj.Name == "Jetpacker" or obj.Name == "Sniper" or obj.Name == "Gunner") then
-                                addESPToModel(obj)
-                            end
-                        end
-                        task.wait(0.4)
-                    end
-                end)
-            end
-        else
-            espRunning = false
-            if espLoop then
-                task.cancel(espLoop)
-                espLoop = nil
-            end
-            Sense.Unload()
-        end
-    end,
-})
-Sense.Load()
-
 
 local hitboxButton = toggleTab:CreateButton({
    Name = "Hitboxes",
