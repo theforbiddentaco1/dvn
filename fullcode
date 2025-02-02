@@ -132,20 +132,26 @@ local gunmods = weaponTab:CreateKeybind({
     
         -- SPECIAL: Burst Rifle
     if Weapon.Name == "Burst Rifle" then
-        Weapon:SetAttribute("BulletSpeed", 12500)
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("BulletSpeed", 250000)
         Weapon:SetAttribute("Spread", 0)
-        Weapon:SetAttribute("BurstCount", 4)
-        Weapon:SetAttribute("BurstFirerate", 175)
+        Weapon:SetAttribute("BurstCount", 5)
+        Weapon:SetAttribute("BurstFirerate", 200)
         Weapon:SetAttribute("ClipSize", 501)
         Weapon:SetAttribute("Firerate", math.huge)
     end
     
         -- SPECIAL: Stonewall
     if Weapon.Name == "Stonewall" then
-        Weapon:SetAttribute("BulletSpeed", 12500)
+        Weapon:GetAttributeChangedSignal("Ammo"):Connect(function()
+            Weapon:SetAttribute("Ammo", 500)
+        end)
+        Weapon:SetAttribute("BulletSpeed", 250000)
         Weapon:SetAttribute("Spread", 0)
-        Weapon:SetAttribute("BurstCount", 5)
-        Weapon:SetAttribute("BurstFirerate", 175)
+        Weapon:SetAttribute("BurstCount", 6)
+        Weapon:SetAttribute("BurstFirerate", 200)
         Weapon:SetAttribute("ClipSize", 501)
         Weapon:SetAttribute("Firerate", math.huge)
         Weapon:SetAttribute("FullAccuracy", 0)
@@ -549,7 +555,7 @@ local epilogueToggles = toggleTab:CreateToggle({
         if toggleEnabled then
             while toggleEnabled do
                 placeItems()
-                task.wait(0.05)
+                task.wait(0.15)
             end
         end
     end,
@@ -596,7 +602,7 @@ local function monitorTools()
                 end
             end
         end
-        task.wait(0.05)
+        task.wait(0.15)
     end
 end
 
@@ -633,14 +639,14 @@ end
 
 workspace.ChildAdded:Connect(function(instance)
     if instance:IsA("Model") then
-        task.wait(0.05)
+        task.wait(0.2)
         adjustHitboxesAndHead(instance)
     end
 end)
 
 for _, instance in ipairs(workspace:GetChildren()) do
     if instance:IsA("Model") then
-        task.wait(0.05)
+        task.wait(0.2)
         adjustHitboxesAndHead(instance)
     end
 end
